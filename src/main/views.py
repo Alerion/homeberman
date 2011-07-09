@@ -33,7 +33,7 @@ def generate(game, user):
                 cell.type = CT_WALL
             else:
                 cell.type = CT_EMPTY
-            print x, y
+
             cell.x = x
             cell.y = y
             cell.save()

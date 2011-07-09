@@ -8,38 +8,23 @@ class GameApiClass(object):
     width = 30
     height = 20
     
-    def put_bomb(self, x, y, user, game):
+    def put_bomb(self, x, y, user, player, game):
         return True
     
-    def move(self, x, y, user, game):
+    def move(self, x, y, user, player, game):
         return True
     
-    def load_players(self, user, game):
+    def load_players(self, user, player, game):
+        enemies = []
+        for p in game.player_set.exclude(pk=player.pk):
+            enemies.append(p.record())
+        
         return {
-            'player': {
-                'name': unicode(user),
-                'x': 0,
-                'y': 0                
-            },
-            'enemies': [{
-                'name': 'Player 1',
-                'x': self.width-1,
-                'y': 0,
-                'id': 1000
-            },{
-                'name': 'Player 2',
-                'x': 0,
-                'y': self.height-1,
-                'id': 10001
-            },{
-                'name': 'Player 3',
-                'x': self.width-1,
-                'y': self.height-1,
-                'id': 10002
-            }]
+            'player': player.record(),
+            'enemies': enemies
         }
     
-    def load_map(self, user, game):
+    def load_map(self, user, player, game):
         output = {}
         qs = game.cells.all()
         
@@ -67,6 +52,7 @@ class CustomRouter(RpcRouter):
     def extra_kwargs(self, request, *args, **kwargs):
         output = super(CustomRouter, self).extra_kwargs(request, *args, **kwargs)
         output['game'] = request.user.get_current_game()
+        output['player'] = request.user.get_player()
         return output
         
 router = CustomRouter()

@@ -33,6 +33,15 @@ class Player(models.Model):
     class Meta:
         unique_together = (('game', 'user'),)
 
+    
+    def record(self):
+        return {
+            'id': self.pk,
+            'name': unicode(self.user),
+            'x': self.cell.x,
+            'y': self.cell.y                     
+        }
+
 class Game(models.Model):
     name = models.CharField(max_length=140, null=True, blank=True)
     status = models.IntegerField(default=0, choices=GAME_STATUS_CHOICES)
@@ -73,7 +82,6 @@ class Cell(models.Model):
         return '%s_%s' % (self.x, self.y)
     
     def record(self):
-        print self.type
         return {
             'type': self.type
         }
