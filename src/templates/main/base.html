@@ -1,13 +1,17 @@
 {% extends 'base.html' %}
 
 {% block head %}
+    <link href="{{ MEDIA_URL }}js/jgrowl/jquery.jgrowl.css" media="all" type="text/css" rel="stylesheet" />
+    <link href="{{ MEDIA_URL }}css/base.css" media="all" type="text/css" rel="stylesheet" />
+    <link href="{{ MEDIA_URL }}css/map.css" media="all" type="text/css" rel="stylesheet" />
+    
     <script src="{{ MEDIA_URL }}js/Orbited.js"></script>
     <script src="{{ MEDIA_URL }}js/stomp.js"></script>
     <script src="{{ MEDIA_URL }}js/jquery-1.6.2.min.js"></script>
     <script src="{{ MEDIA_URL }}js/jquery.rpc.js"></script>
-    <script src="{{ MEDIA_URL }}js/jQuery.StompListener.js"></script>
     <script src="{{ MEDIA_URL }}js/jgrowl/jquery.jgrowl.js"></script>
-    <link href="{{ MEDIA_URL }}js/jgrowl/jquery.jgrowl.css" media="all" type="text/css" rel="stylesheet" />
+    <script src="{{ MEDIA_URL }}js/jQuery.StompListener.js"></script>
+    <script src="{{ MEDIA_URL }}js/jQuery.Game.Map.js"></script>
     <script src="{% url main:api %}"></script>    
     <script>
         //Show error message for RPC exceptions

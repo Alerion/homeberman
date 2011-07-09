@@ -1,0 +1,8 @@
+.map {
+    position: relative;
+}
+
+.map .cell {
+    background-color: #DDD;
+    position: absolute;
+}
