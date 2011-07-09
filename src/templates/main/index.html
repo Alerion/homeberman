@@ -3,21 +3,18 @@
 {% block head %}
     {{ block.super }}
     <script>
-        jQuery(function(){
-            MainApi.hello('dude', function(response){
-                $.jGrowl(response.msg)
-            })
-            GameApi.func1();
-            $('.test-stomp').click(function(){
-                console.log('Test STOMP');
-                MainApi.test_stomp('STOMP');
-                return false;
-            })
+        jQuery(function($){
+            var Map = new jQuery.Game.Map({
+                node: $('.map')
+            });
+            
+            var Controller = new jQuery.Game.Controller({
+                map: Map
+            });
         });
     </script>
 {% endblock %}
 
 {% block content%}
-HELLOW WORLD!
-<a href="#" class="test-stomp">Click</a>
+<div class="map"></div>
 {% endblock %}
