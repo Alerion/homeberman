@@ -1,9 +1,20 @@
 {% extends 'base.html' %}
 
 {% block head %}
-
+    <script src="{{ MEDIA_URL }}js/jquery-1.6.2.min.js"></script>
+    <script src="{{ MEDIA_URL }}js/jquery.rpc.js"></script>
+    <script src="{{ MEDIA_URL }}js/jgrowl/jquery.jgrowl.js"></script>
+    <link href="{{ MEDIA_URL }}js/jgrowl/jquery.jgrowl.css" media="all" type="text/css" rel="stylesheet" />
+    <script src="{% url main:api %}"></script>    
+    <script>
+        //Show error message for RPC exceptions
+        jQuery.Rpc.on('exception', function(event){
+            $.jGrowl.error('ERROR: '+event.message);
+        }); 
+    </script>
 {% endblock %}
 
-{% block body %}
 
+{% block body %}
+    {% block content %}{% endblock %}
 {% endblock %}
