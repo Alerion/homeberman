@@ -12,7 +12,7 @@ class GameApiClass(object):
         return True
     
     def move(self, x, y, user, player, game):
-        return True
+        return player.move_to(x, y)
     
     def load_players(self, user, player, game):
         enemies = []

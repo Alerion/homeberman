@@ -3,6 +3,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.db import models
 from accounts.models import User
+import time
+
+MOVE_TIME = 1
 
 GS_WAITING = 0
 GS_PLAYING = 1
@@ -32,7 +35,30 @@ class Player(models.Model):
     
     class Meta:
         unique_together = (('game', 'user'),)
-
+    
+    def update_move_time(self):
+        self.last_move_time = time.time()
+        self.save()
+    
+    def can_move(self):
+        return not self.is_dead and \
+            (time.time() - self.last_move_time) > MOVE_TIME
+    
+    def move_to(self, x, y):
+        if not self.can_move():
+            return False
+        
+        cell = self.game.get_cell(x=x, y=y)
+        
+        if not cell:
+            return False
+        
+        self.update_move_time()
+        
+        self.cell = cell
+        self.save()
+        
+        return True
     
     def record(self):
         return {
@@ -50,7 +76,13 @@ class Game(models.Model):
     winner = models.ForeignKey(Player, related_name='winned_games', null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     started = models.DateTimeField(null=True, blank=True)
-
+    
+    def get_cell(self, x, y):
+        try:
+            return self.cells.get(x=x, y=y)
+        except models.ObjectDoesNotExist:
+            pass
+    
     def get_size(self):
         if self.size == GS_SMALL:
             return 20, 15
