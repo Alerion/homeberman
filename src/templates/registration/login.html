@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+
+<h1>Login</h1>
+
+{% if user.is_authenticated %}
+  <p>You are logged now. {{ user.username }}</p>
+  <p><a href="{% url accounts:logout %}?next={{ request.path }}">Logout</a></p>
+{% else %}
+  <form action="" method="POST">
+    {% csrf_token %}
+    <table>{{ form }}</table>
+    <p><input type="submit" value="Login"></p>
+  </form>
+{% endif %}
+
+{% endblock %}
