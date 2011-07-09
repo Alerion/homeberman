@@ -68,17 +68,20 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
     createBomb: function(){
         if (this.player.isDead) return;
         
-        var bomb = new jQuery.Game.Bomb({
-            cell: this.player.cell
-        });
-        this.bombs[bomb.key] = bomb;
+        GameApi.put_bomb(this.player.cell.x, this.player.cell.y, function(){
+            var bomb = new jQuery.Game.Bomb({
+                cell: this.player.cell
+            });
+            this.bombs[bomb.key] = bomb;            
+        }, this);
     },
     onCellClick: function(cell, map){
         if ( ! this.player.isDead && this.canMove(cell)){
-            GameApi.move(cell.x, cell.y, function(){
-                
-            });
-            this.player.setCell(cell);
+            GameApi.move(cell.x, cell.y, function(response){
+                if (response){
+                    this.player.setCell(cell);
+                }
+            }, this);
         }
     }
 });

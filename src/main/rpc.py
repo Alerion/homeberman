@@ -26,8 +26,11 @@ class GameApiClass(object):
     width = 30
     height = 20
     
+    def put_bomb(self, x, y, user):
+        return True
+    
     def move(self, x, y, user):
-        pass
+        return True
     
     def load_players(self, user):
         return {
