@@ -75,6 +75,9 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
     },
     onCellClick: function(cell, map){
         if ( ! this.player.isDead && this.canMove(cell)){
+            GameApi.move(cell.x, cell.y, function(){
+                
+            });
             this.player.setCell(cell);
         }
     }

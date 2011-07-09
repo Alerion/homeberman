@@ -25,7 +25,10 @@ class MainApiClass(object):
 class GameApiClass(object):
     width = 30
     height = 20
-            
+    
+    def move(self, x, y, user):
+        pass
+    
     def load_players(self, user):
         return {
             'player': {
