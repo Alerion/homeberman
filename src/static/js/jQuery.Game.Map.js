@@ -105,7 +105,7 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
                     x: x,
                     y: y,
                     node: jQuery('<div class="cell"></div>'),
-                    type: info.cells[key]
+                    type: info.cells[key].type
                 });
                 cell.on('click', this.onCellClick, this);
                 this.cells[key] = cell;

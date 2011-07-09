@@ -35,7 +35,7 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
         return ( 
             cell.isMoveable() && 
             dx <= 1 && 
-            dx <= 1 &&
+            dy <= 1 &&
             dx != dy
         )
     },

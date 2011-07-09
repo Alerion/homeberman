@@ -41,16 +41,17 @@ class GameApiClass(object):
     
     def load_map(self, user, game):
         output = {}
-        for x in range(1, self.width-1):
-            for y in range(1, self.height-1):
-                if random.random() < 0.2:
-                    output['%s_%s' % (x, y)] = CT_WALL
-                else:
-                    output['%s_%s' % (x, y)] = CT_EMPTY
+        qs = game.cells.all()
+        
+        for cell in qs:
+            output[cell.key()] = cell.record()
+            
+        w, h = game.get_size()
+
         return {
             'cells': output,
-            'width': 30,
-            'height': 20
+            'width': w,
+            'height': h
         }
 
 class CustomRouter(RpcRouter):
