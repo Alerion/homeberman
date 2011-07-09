@@ -3,6 +3,7 @@
 .coverage
 .project
 .pydevproject
+orbited.cfg
 tasks_proj/settings_local.py
 database.sqlite
 env/
