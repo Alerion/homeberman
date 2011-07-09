@@ -106,6 +106,9 @@ INSTALLED_APPS = (
     'south'
 )
 
+ORBITED_HTTP_SOCKET = 9000
+ORBITED_STOMP_SOCKET = 61613
+
 try:
     from settings_local import *
 except ImportError:

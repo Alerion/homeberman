@@ -6,6 +6,9 @@ class User(BaseUser):
     
     objects = UserManager()
 	
+    def get_stomp_key(self):
+        return self.pk
+    
 def create_custom_user(sender, instance, created, **kwargs):
     if created:
         values = {}
