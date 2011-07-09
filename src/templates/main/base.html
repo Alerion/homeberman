@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 
 {% block head %}
+    <script src="{{ MEDIA_URL }}js/Orbited.js"></script>
+    <script src="{{ MEDIA_URL }}js/stomp.js"></script>
     <script src="{{ MEDIA_URL }}js/jquery-1.6.2.min.js"></script>
     <script src="{{ MEDIA_URL }}js/jquery.rpc.js"></script>
+    <script src="{{ MEDIA_URL }}js/jQuery.StompListener.js"></script>
     <script src="{{ MEDIA_URL }}js/jgrowl/jquery.jgrowl.js"></script>
     <link href="{{ MEDIA_URL }}js/jgrowl/jquery.jgrowl.css" media="all" type="text/css" rel="stylesheet" />
     <script src="{% url main:api %}"></script>    
@@ -10,10 +13,29 @@
         //Show error message for RPC exceptions
         jQuery.Rpc.on('exception', function(event){
             $.jGrowl.error('ERROR: '+event.message);
-        }); 
+        });
+        
+        //Init STOMP
+        STOMP_KEY = '{{ user.get_stomp_key }}';
+        ORBITED_STOMP_SOCKET = {{ ORBITED_STOMP_SOCKET }};
+        ORBITED_HTTP_SOCKET = {{ ORBITED_HTTP_SOCKET }};
+        
+        document.domain=document.domain;
+        Orbited.settings.port = ORBITED_HTTP_SOCKET;
+        TCPSocket = Orbited.TCPSocket;
+        
+        jQuery(function(){
+            var stompListener = new jQuery.StompListener({
+                socket: ORBITED_STOMP_SOCKET,
+                user_id: STOMP_KEY
+            });
+            
+            stompListener.on('user', function(){
+                console.log(arguments)
+            });
+        });
     </script>
 {% endblock %}
-
 
 {% block body %}
     {% block content %}{% endblock %}
