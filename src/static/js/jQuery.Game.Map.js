@@ -9,6 +9,7 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
     x: null,
     y: null,
     type: null,
+    player: null, //jQuery.Game.BasePlayer
     constructor : function(config){
         jQuery.extend(this, config);
         jQuery.Game.Cell.superclass.constructor.call(this, config);
@@ -22,8 +23,25 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         this.node.css('font-size', this.size);
         switch(this.type){
             case jQuery.Game.WALL:
-            this.node.html('#');
+            this.drawWall();
             break;
+        }
+    },
+    setPlayer: function(player){
+        this.player = player;
+        this.drawPlayer();
+    },
+    drawEmpty: function(){
+        this.node.html('');
+    },
+    drawWall: function(){
+        this.node.html('#');
+    },    
+    drawPlayer: function(){
+        if (this.player.isPlayer){
+            this.node.html('@');
+        }else{
+            this.node.html('&');
         }
     }
 });
@@ -59,5 +77,8 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
                 this.node.append(cell.node);
             }            
         }
+    },
+    getCell: function(x, y){
+        return this.cells[x+'_'+y];
     }
 });

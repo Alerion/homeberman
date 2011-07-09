@@ -4,8 +4,12 @@
     {{ block.super }}
     <script>
         jQuery(function($){
-            var map = new jQuery.Game.Map({
+            var Map = new jQuery.Game.Map({
                 node: $('.map')
+            });
+            
+            var Controller = new jQuery.Game.Controller({
+                map: Map
             });
         });
     </script>
