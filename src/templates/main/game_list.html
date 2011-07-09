@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+    <div>
+        Hello {{ user }} | <a href="{% url accounts:logout %}?next={{ request.path_info|urlencode }}">Logout</a>
+    </div>
+    Games list
+{% endblock %}

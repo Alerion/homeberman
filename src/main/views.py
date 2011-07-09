@@ -2,12 +2,14 @@ from utils.decorators import render_to
 from django.conf import settings
 from main.models import Game, Cell, Player, CT_EMPTY, CT_WALL
 from accounts.models import User
+from django.shortcuts import redirect
 import random
 
 @render_to('main/index.html')
 def index(request):
-    request.user.get_current_game()
-    game = Game.objects.all()[:1].get()
+    game = request.user.get_current_game()
+    if not game:
+        return redirect('main:list_games')
     
     #generate(game,request.user)
     
@@ -15,7 +17,11 @@ def index(request):
         'ORBITED_STOMP_SOCKET': settings.ORBITED_STOMP_SOCKET,
         'ORBITED_HTTP_SOCKET': settings.ORBITED_HTTP_SOCKET
     }
-    
+
+@render_to('main/list.html')
+def list_games(request):
+    return {}
+
 def generate(game, user):
     width = 30
     height = 20

@@ -3,6 +3,7 @@ from rpc import router
 
 urlpatterns = patterns('main.views',
     url(r'^$', 'index', name='index'),
+    url(r'^list_games/$', 'list_games', name='list_games'),
     url(r'^router/$', router, name='router'),
     url(r'^router/api/$', router.api, name='api'),    
 )
