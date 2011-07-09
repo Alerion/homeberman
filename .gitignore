@@ -1,0 +1,8 @@
+*.pyc
+*.*~
+.coverage
+.project
+.pydevproject
+tasks_proj/settings_local.py
+database.sqlite
+env/
