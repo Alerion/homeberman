@@ -55,14 +55,6 @@
                   }
               });            
             
-            var stompListener = new jQuery.StompListener({
-                socket: ORBITED_STOMP_SOCKET,
-                user_id: STOMP_KEY
-            });
-            
-            stompListener.on('user', function(){
-                console.log(arguments)
-            });
         });
     </script>
 {% endblock %}

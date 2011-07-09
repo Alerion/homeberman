@@ -117,6 +117,9 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
         this.fireEvent('cellclick', cell, this);
     },
     getCell: function(x, y){
-        return this.cells[x+'_'+y];
+        if (x && y){
+            return this.cells[x+'_'+y];
+        }
+        return this.cells[x];
     }
 });

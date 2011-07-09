@@ -5,6 +5,7 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
     player: null, //jQuery.Game.Player
     enemies: {},
     bombs: {},
+    stomp: null, //jQuery.StompListener
     constructor : function(config){
         jQuery.extend(this, config);
         jQuery.Game.Controller.superclass.constructor.call(this, config);
@@ -15,6 +16,17 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
         this.map.on('cellclick', this.onCellClick, this);
         var that = this;
         jQuery('body').keypress(function(event){that.onKeyPress(event); return false;});
+        this.stomp.on('user', this.onServerEvent, this);
+    },
+    onServerEvent: function(msg){
+        switch(msg.event){
+            case 'user_moved':
+            var player = this.enemies[msg.player_id];
+            var cell = this.map.getCell(msg.cell.id);
+            player.setCell(cell);
+            break;
+        }
+        console.log(msg)
     },
     initPlayers: function(data){
         this.player = new jQuery.Game.Player({

@@ -4,12 +4,18 @@
     {{ block.super }}
     <script>
         jQuery(function($){
+            var stompListener = new jQuery.StompListener({
+                socket: ORBITED_STOMP_SOCKET,
+                user_id: STOMP_KEY
+            });
+                        
             var Map = new jQuery.Game.Map({
                 node: $('.map')
             });
             
             var Controller = new jQuery.Game.Controller({
-                map: Map
+                map: Map,
+                stomp: stompListener
             });
         });
     </script>

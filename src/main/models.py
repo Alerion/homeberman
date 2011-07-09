@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.db import models
 from accounts.models import User
+from utils.stomp_utils import send_user
 import time
 
 MOVE_TIME = 1
@@ -50,13 +51,20 @@ class Player(models.Model):
         
         cell = self.game.get_cell(x=x, y=y)
         
-        if not cell:
+        if not cell or not cell.can_move():
             return False
         
         self.update_move_time()
         
         self.cell = cell
         self.save()
+        
+        msg = {
+            'event': 'user_moved',
+            'player_id': self.pk,
+            'cell': self.cell.record()
+        }
+        self.game.send_players(msg, self)
         
         return True
     
@@ -76,6 +84,15 @@ class Game(models.Model):
     winner = models.ForeignKey(Player, related_name='winned_games', null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     started = models.DateTimeField(null=True, blank=True)
+    
+    def send_players(self, msg, exclude=None):
+        qs = self.player_set.select_related('user')
+        
+        if exclude:
+            qs = qs.exclude(pk=exclude.pk)
+        
+        for player in qs:
+            send_user(msg, player.user)
     
     def get_cell(self, x, y):
         try:
@@ -113,8 +130,12 @@ class Cell(models.Model):
     def key(self):
         return '%s_%s' % (self.x, self.y)
     
+    def can_move(self):
+        return self.type != CT_WALL
+    
     def record(self):
         return {
+            'id': self.key(),
             'type': self.type
         }
     
