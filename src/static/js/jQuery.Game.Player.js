@@ -12,6 +12,11 @@ jQuery.Game.BasePlayer = jQuery.inherit(jQuery.util.Observable, {
     },
     init: function(){
         this.cell.setPlayer(this);
+    },
+    setCell: function(cell){
+        this.cell && this.cell.setPlayer();
+        this.cell = cell;
+        this.cell.setPlayer(this);
     }
 });
 
@@ -29,5 +34,17 @@ jQuery.Game.Enemy = jQuery.inherit(jQuery.Game.BasePlayer, {
     isDead: false,
     init: function(){
         jQuery.Game.Enemy.superclass.init.call(this);
+    }
+});
+
+jQuery.Game.Bomb = jQuery.inherit(jQuery.util.Observable, {
+    cell: null, //jQuery.Game.Cell
+    constructor : function(config){
+        jQuery.extend(this, config);
+        jQuery.Game.Bomb.superclass.constructor.call(this, config);
+        this.init();
+    },
+    init: function(){
+        this.cell.setBomb(this);
     }
 });
