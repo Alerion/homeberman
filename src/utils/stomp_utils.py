@@ -21,3 +21,7 @@ def stomp_send(data, destination):
         stomp_connection.connect()
     print destination
     stomp_connection.send(json.dumps(data), destination=destination)
+    
+def send_user(data, user):
+    dest = dest = '/user/%s' % user.get_stomp_key()
+    stomp_send(data, dest)
