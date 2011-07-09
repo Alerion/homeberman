@@ -3,34 +3,18 @@ from utils.rpc import RpcRouter
 from utils.stomp_utils import stomp_send
 from main.models import CT_EMPTY, CT_WALL
 import random
-
-class MainApiClass(object):
-    
-    def hello(self, val, user):
-        return {
-            'msg': u'Hello World %s!' % val,
-            'val': val
-        }
-    
-    def test_stomp(self, val, user):
-        print 'test stomp'
-        data = {
-            'msg': u'Hello World %s!' % val,
-            'val': val
-        }
-        stomp_send(data, '/user/%s' % user.get_stomp_key())
     
 class GameApiClass(object):
     width = 30
     height = 20
     
-    def put_bomb(self, x, y, user):
+    def put_bomb(self, x, y, user, game):
         return True
     
-    def move(self, x, y, user):
+    def move(self, x, y, user, game):
         return True
     
-    def load_players(self, user):
+    def load_players(self, user, game):
         return {
             'player': {
                 'name': unicode(user),
@@ -55,7 +39,7 @@ class GameApiClass(object):
             }]
         }
     
-    def load_map(self, user):
+    def load_map(self, user, game):
         output = {}
         for x in range(1, self.width-1):
             for y in range(1, self.height-1):
@@ -68,8 +52,20 @@ class GameApiClass(object):
             'width': 30,
             'height': 20
         }
+
+class CustomRouter(RpcRouter):
+    
+    def __init__(self):
+        self.url = 'main:router'
+        self.actions = {
+            'GameApi': GameApiClass()
+        }
+        self.enable_buffer = 50
+        self.max_retries = 1
+    
+    def extra_kwargs(self, request, *args, **kwargs):
+        output = super(CustomRouter, self).extra_kwargs(request, *args, **kwargs)
+        output['game'] = request.user.get_current_game()
+        return output
         
-router = RpcRouter('main:router', {
-    'MainApi': MainApiClass(),
-    'GameApi': GameApiClass()
-})
+router = CustomRouter()
