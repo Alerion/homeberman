@@ -19,7 +19,6 @@ def stomp_send(data, destination):
     except (ConnectionClosedException, NotConnectedException):
         sleep(0.5)
         stomp_connection.connect()
-    print destination
     stomp_connection.send(json.dumps(data), destination=destination)
     
 def send_user(data, user):

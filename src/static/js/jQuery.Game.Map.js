@@ -83,7 +83,7 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
     node: null,
     width: null,
     height: null,
-    cell_size: 25,
+    cell_size: 20,
     cells: {},
     constructor : function(config){
         this.addEvents('cellclick');
