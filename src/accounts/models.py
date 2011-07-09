@@ -9,6 +9,19 @@ class User(BaseUser):
     def get_stomp_key(self):
         return self.pk
     
+    def get_player(self):
+        game = self.get_current_game()
+        
+        if game:
+            return game.player_set.get(user=self)
+    
+    def get_current_game(self):
+        from main.models import Game, GS_PLAYING
+        try:
+            return Game.objects.filter(status=GS_PLAYING, player__user=self)[:1].get()
+        except Game.DoesNotExist:
+            pass
+    
 def create_custom_user(sender, instance, created, **kwargs):
     if created:
         values = {}

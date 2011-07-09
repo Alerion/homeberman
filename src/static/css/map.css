@@ -5,4 +5,5 @@
 .map .cell {
     background-color: #DDD;
     position: absolute;
+    cursor: pointer;
 }

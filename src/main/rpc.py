@@ -1,71 +1,58 @@
 from utils.rpc import Error, Msg, RpcExceptionEvent, add_request_to_kwargs
 from utils.rpc import RpcRouter
 from utils.stomp_utils import stomp_send
+from main.models import CT_EMPTY, CT_WALL
 import random
-
-EMPTY = 0
-WALL = 1
-
-class MainApiClass(object):
-    
-    def hello(self, val, user):
-        return {
-            'msg': u'Hello World %s!' % val,
-            'val': val
-        }
-    
-    def test_stomp(self, val, user):
-        print 'test stomp'
-        data = {
-            'msg': u'Hello World %s!' % val,
-            'val': val
-        }
-        stomp_send(data, '/user/%s' % user.get_stomp_key())
     
 class GameApiClass(object):
     width = 30
     height = 20
-            
-    def load_players(self, user):
+    
+    def put_bomb(self, x, y, user, player, game):
+        return True
+    
+    def move(self, x, y, user, player, game):
+        return player.move_to(x, y)
+    
+    def load_players(self, user, player, game):
+        enemies = []
+        for p in game.player_set.exclude(pk=player.pk):
+            enemies.append(p.record())
+        
         return {
-            'player': {
-                'name': unicode(user),
-                'x': 0,
-                'y': 0                
-            },
-            'enemies': [{
-                'name': 'Player 1',
-                'x': self.width-1,
-                'y': 0,
-                'id': 1000
-            },{
-                'name': 'Player 2',
-                'x': 0,
-                'y': self.height-1,
-                'id': 10001
-            },{
-                'name': 'Player 3',
-                'x': self.width-1,
-                'y': self.height-1,
-                'id': 10002
-            }]
+            'player': player.record(),
+            'enemies': enemies
         }
     
-    def load_map(self, user):
+    def load_map(self, user, player, game):
         output = {}
-        for x in range(1, self.width-1):
-            for y in range(1, self.height-1):
-                if random.random() < 0.2:
-                    output['%s_%s' % (x, y)] = WALL
-                else:
-                    output['%s_%s' % (x, y)] = EMPTY
+        qs = game.cells.all()
+        
+        for cell in qs:
+            output[cell.key()] = cell.record()
+            
+        w, h = game.get_size()
+
         return {
             'cells': output,
-            'width': 30,
-            'height': 20
+            'width': w,
+            'height': h
         }
+
+class CustomRouter(RpcRouter):
+    
+    def __init__(self):
+        self.url = 'main:router'
+        self.actions = {
+            'GameApi': GameApiClass()
+        }
+        self.enable_buffer = 50
+        self.max_retries = 1
+    
+    def extra_kwargs(self, request, *args, **kwargs):
+        output = super(CustomRouter, self).extra_kwargs(request, *args, **kwargs)
+        output['game'] = request.user.get_current_game()
+        output['player'] = request.user.get_player()
+        return output
         
-router = RpcRouter('main:router', {
-    'MainApi': MainApiClass(),
-    'GameApi': GameApiClass()
-})
+router = CustomRouter()
