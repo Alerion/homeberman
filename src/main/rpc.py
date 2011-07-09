@@ -1,10 +1,8 @@
 from utils.rpc import Error, Msg, RpcExceptionEvent, add_request_to_kwargs
 from utils.rpc import RpcRouter
 from utils.stomp_utils import stomp_send
+from main.models import CT_EMPTY, CT_WALL
 import random
-
-EMPTY = 0
-WALL = 1
 
 class MainApiClass(object):
     
@@ -62,9 +60,9 @@ class GameApiClass(object):
         for x in range(1, self.width-1):
             for y in range(1, self.height-1):
                 if random.random() < 0.2:
-                    output['%s_%s' % (x, y)] = WALL
+                    output['%s_%s' % (x, y)] = CT_WALL
                 else:
-                    output['%s_%s' % (x, y)] = EMPTY
+                    output['%s_%s' % (x, y)] = CT_EMPTY
         return {
             'cells': output,
             'width': 30,
