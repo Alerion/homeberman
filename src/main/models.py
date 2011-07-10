@@ -163,6 +163,7 @@ class Game(models.Model):
     objects = models.Manager()
     are_waiting = QueryManager(status=GS_WAITING)
     are_playing = QueryManager(status=GS_PLAYING)
+    are_finished = QueryManager(status=GS_FINISHED)
     
     def __unicode__(self):
         return self.name or 'Game #%s' % self.pk 

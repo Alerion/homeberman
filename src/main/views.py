@@ -1,14 +1,13 @@
 from utils.decorators import render_to
 from django.conf import settings
 from django.shortcuts import get_object_or_404, redirect
-from main.models import Game, Cell, Player, CT_EMPTY, CT_WALL
+from main.models import Game, Cell, Player, CT_EMPTY, CT_WALL, GS_FINISHED
 from accounts.models import User
 import random
 
 from main.models import Game, Cell, Player, CT_EMPTY, CT_WALL
 from accounts.models import User
 from forms import GameForm
-
 
 @render_to('main/index.html')
 def index(request):
@@ -22,6 +21,13 @@ def index(request):
         'game': game,
         'ORBITED_STOMP_SOCKET': settings.ORBITED_STOMP_SOCKET,
         'ORBITED_HTTP_SOCKET': settings.ORBITED_HTTP_SOCKET
+    }
+
+@render_to('main/games_history.html')
+def games_history(request):
+    
+    return {
+        'games': Game.are_finished.filter(players__user=request.user)
     }
 
 @render_to('main/finished.html')

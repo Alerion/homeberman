@@ -4,16 +4,15 @@
 
 {% block body %}
     <div>
-        {{ game }}
         <table>
             <thead>
-                <td>Player</td>
-                <td>Deaths</td>
+                <td>Game</td>
+                <td>Finished</td>
             </thead>
-            {% for player in game.players.all %}
+            {% for game in games %}
                 <tr>
-                    <td>{{ player }}</td>
-                    <td>{{ player.death_count }}</td>
+                    <td><a href="{% url main:finished game.pk %}">{{ game }}</a></td>
+                    <td>{{ game.finished }}</td>
                 </tr>
             {% endfor %}
         </table>
