@@ -113,7 +113,7 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         if (this.isMoveable()){
             //this.node.html('☠');
             this.node.attr('class', 'cell explosion');
-            this.dellayedDraw.delay(700);            
+            this.dellayedDraw.delay(300);            
         }
     }
 });
