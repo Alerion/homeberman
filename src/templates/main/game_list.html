@@ -8,15 +8,15 @@
     {% endif %}
     
     <table>
-        <tr>
-            <td>название</td>
-            <td>лимит смертей</td>
-            <td>размер карты</td>
-            <td>игроки</td>
+        <tr align="center" style="font: bold 110% serif; background: #aabbbb;">
+            <td>Название</td>
+            <td>Лимит смертей</td>
+            <td>Размер карты</td>
+            <td>Игроки</td>
             <td></td>
         </tr>
         {% for game in games %}
-            <tr>
+            <tr align="center">
                 <td>{{ game }}</td>
                 <td>{{ game.death_limit }}</td>
                 <td>{{ game.get_size_display }}</td>
