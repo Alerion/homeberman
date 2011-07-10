@@ -11,7 +11,7 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
     type: null,
     player: null, //jQuery.Game.BasePlayer
     bomb: null, //jQuery.Game.Bomb
-    key: 'x_y',
+    id: 'x_y',
     constructor : function(config){
         this.addEvents('click');
         jQuery.extend(this, config);
@@ -19,7 +19,6 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         this.init();
     },
     init: function(){
-        this.key = this.x+'_'+this.y;
         this.node.css('width', this.size);
         this.node.css('height', this.size);
         this.node.css('top', this.y*this.size);
@@ -85,6 +84,7 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
     height: null,
     cell_size: 20,
     cells: {},
+    bombs: {},
     constructor : function(config){
         this.addEvents('cellclick');
         jQuery.extend(this, config);
@@ -100,15 +100,20 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
         for (var x=0; x<this.width; x++){
             for (var y=0; y<this.height; y++){
                 var key = x+'_'+y;
-                var cell = new jQuery.Game.Cell({
+                var cell_info = info.cells[key];
+                
+                var config = {
                     size: this.cell_size,
-                    x: x,
-                    y: y,
-                    node: jQuery('<div class="cell"></div>'),
-                    type: info.cells[key].type
-                });
+                    node: jQuery('<div class="cell"></div>')
+                };
+                jQuery.extend(config, cell_info);
+                
+                var cell = new jQuery.Game.Cell(config);
                 cell.on('click', this.onCellClick, this);
-                this.cells[key] = cell;
+                this.cells[cell.id] = cell;
+                if (cell_info.has_bomb){
+                    this.addBomb(cell);
+                }
                 this.node.append(cell.node);
             }            
         }
@@ -121,5 +126,11 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
             return this.cells[x+'_'+y];
         }
         return this.cells[x];
+    },
+    addBomb: function(cell){
+        var bomb = new jQuery.Game.Bomb({
+            cell: cell
+        });
+        this.bombs[bomb.id] = bomb;          
     }
 });

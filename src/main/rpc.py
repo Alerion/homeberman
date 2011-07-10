@@ -9,7 +9,7 @@ class GameApiClass(object):
     height = 20
     
     def put_bomb(self, x, y, user, player, game):
-        return True
+        return player.put_bomb()
     
     def move(self, x, y, user, player, game):
         return player.move_to(x, y)

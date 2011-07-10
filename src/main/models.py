@@ -41,6 +41,16 @@ class Player(models.Model):
         self.last_move_time = time.time()
         self.save()
     
+    def can_put_bomb(self):
+        return not self.is_dead and not self.cell.bomb_time
+    
+    def put_bomb(self):
+        if not self.can_put_bomb():
+            return False
+        
+        self.cell.put_bomb()
+        return True        
+    
     def can_move(self):
         return not self.is_dead and \
             (time.time() - self.last_move_time) > MOVE_TIME
@@ -64,7 +74,7 @@ class Player(models.Model):
             'player_id': self.pk,
             'cell': self.cell.record()
         }
-        self.game.send_players(msg, self)
+        self.game.send_players(msg, self);
         
         return True
     
@@ -123,6 +133,7 @@ class Cell(models.Model):
     x = models.IntegerField()
     y = models.IntegerField()
     type = models.IntegerField(default=CT_EMPTY, choices=CELL_TYPE_CHOICES)
+    bomb_time = models.IntegerField(null=True, blank=True)
     
     class Meta:
         unique_together = (('game', 'x', 'y'),)
@@ -133,9 +144,16 @@ class Cell(models.Model):
     def can_move(self):
         return self.type != CT_WALL
     
+    def put_bomb(self):
+        self.bomb_time = time.time()
+        self.save()
+    
     def record(self):
         return {
             'id': self.key(),
-            'type': self.type
+            'type': self.type,
+            'x': self.x,
+            'y': self.y,
+            'has_bomb': bool(self.bomb_time)
         }
     

@@ -43,6 +43,7 @@ jQuery.Game.Bomb = jQuery.inherit(jQuery.util.Observable, {
         jQuery.extend(this, config);
         jQuery.Game.Bomb.superclass.constructor.call(this, config);
         this.init();
+        this.id = this.cell.id;
     },
     init: function(){
         this.cell.setBomb(this);
