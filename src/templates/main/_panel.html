@@ -1,5 +1,9 @@
-{{ game }}
+<b>{{ game }}(лимит смертей - {{ game.death_limit }})</b>
 <table>
+    <thead>
+        <td>имя</td>
+        <td>кол. смертей</td>
+    </thead>
     {% for player in game.players.all %}
     <tr>
         <td>{{ player }}</td>

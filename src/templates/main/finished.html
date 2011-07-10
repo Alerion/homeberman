@@ -4,18 +4,6 @@
 
 {% block body %}
     <div>
-        {{ game }}
-        <table>
-            <thead>
-                <td>Player</td>
-                <td>Deaths</td>
-            </thead>
-            {% for player in game.players.all %}
-                <tr>
-                    <td>{{ player }}</td>
-                    <td>{{ player.death_count }}</td>
-                </tr>
-            {% endfor %}
-        </table>
+        {% include "main/_panel.html" %}
     </div>
 {% endblock %}
