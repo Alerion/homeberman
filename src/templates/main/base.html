@@ -30,6 +30,10 @@
         Orbited.settings.port = ORBITED_HTTP_SOCKET;
         TCPSocket = Orbited.TCPSocket;
         
+        function log(){
+            console && console.log && console.log(arguments);
+        }
+        
         jQuery(function(){
               $.ajaxSetup({
                   beforeSend: function(xhr, settings) {
