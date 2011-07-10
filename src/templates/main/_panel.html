@@ -1,1 +1,9 @@
 {{ game }}
+<table>
+    {% for player in game.players.all %}
+    <tr>
+        <td>{{ player }}</td>
+        <td>{{ player.death_count }}</td>
+    </tr>
+    {% endfor %}
+</table>
