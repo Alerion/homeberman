@@ -70,6 +70,7 @@ class Player(models.Model):
         self.cell = self.game.get_respown_cell()
         self.death_time = 0
         self.is_dead = False
+        self.last_move_time = 0
         self.save()
 
         msg = {
@@ -83,6 +84,7 @@ class Player(models.Model):
         self.is_dead = True
         self.death_time = time.time()
         self.death_count = self.death_count+1
+        self.last_move_time = 0
         self.save()
         
         msg = {
@@ -159,6 +161,7 @@ class Game(models.Model):
     started = models.DateTimeField(null=True, blank=True)
     finished = models.DateTimeField(null=True, blank=True)
     death_limit = models.IntegerField(default=10)
+    unmove_max_time = models.IntegerField(default=10)
     
     objects = models.Manager()
     are_waiting = QueryManager(status=GS_WAITING)
@@ -210,7 +213,10 @@ class Game(models.Model):
     def add_user(self, user):
         player = Player(game=self, user=user, cell=self.get_respown_cell())
         player.save()
-    
+        
+        if self.players.all().count() >= self.max_players:
+            self.start()
+        
     def is_plaing(self):
         return self.status == GS_PLAYING
     
