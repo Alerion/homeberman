@@ -138,7 +138,7 @@ class Player(models.Model):
             'player_id': self.pk,
             'cell': self.cell.record()
         }
-        self.game.send_players(msg, self);
+        self.game.send_players(msg);
         
         return True
     
@@ -170,6 +170,9 @@ class Game(models.Model):
     
     def __unicode__(self):
         return self.name or 'Game #%s' % self.pk 
+    
+    def stomp_key(self):
+        return self.pk
     
     def start(self):
         self.status = GS_PLAYING
@@ -233,14 +236,8 @@ class Game(models.Model):
         }
         self.send_players(msg)
     
-    def send_players(self, msg, exclude=None):
-        qs = self.players.select_related('user')
-        
-        if exclude:
-            qs = qs.exclude(pk=exclude.pk)
-        
-        for player in qs:
-            send_user(msg, player.user)
+    def send_players(self, msg):
+        send_user(msg, self)
     
     def get_cell(self, x, y):
         try:
