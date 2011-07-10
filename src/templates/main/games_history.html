@@ -4,10 +4,11 @@
 
 {% block body %}
     <div>
+        {% if games %}
         <table>
             <thead>
-                <td>Game</td>
-                <td>Finished</td>
+                <td>название</td>
+                <td>время окончания</td>
             </thead>
             {% for game in games %}
                 <tr>
@@ -16,5 +17,8 @@
                 </tr>
             {% endfor %}
         </table>
+        {% else %}
+        Вы не доиграли ни одной игры.
+        {% endif %}
     </div>
 {% endblock %}
