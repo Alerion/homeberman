@@ -19,6 +19,9 @@ FIXTURE_DIRS = (
     rel('fixtures'),
 )
 
+PUBLIC_URLS = ('accounts/create/',)
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = ('/accounts/login/')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -29,7 +32,7 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
-LOGIN_REDIRECT_URL = '/accounts/login/'
+
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name

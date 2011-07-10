@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Create user{% endblock %}
 
 {% block body %}
 
@@ -14,7 +14,6 @@
     {% csrf_token %}
     <table>{{ form }}</table>
     <p><input type="submit" value="Login"></p>
-    <p><a href="{% url accounts:create %}">Registration</a></p>
   </form>
 {% endif %}
 
