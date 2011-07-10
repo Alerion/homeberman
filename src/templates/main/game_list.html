@@ -8,14 +8,28 @@
     {% endif %}
     
     <table>
+        <tr>
+            <td>name</td>
+            <td>death limit</td>
+            <td>size</td>
+            <td>players</td>
+            <td></td>
+        </tr>
         {% for game in games %}
             <tr>
                 <td>{{ game }}</td>
+                <td>{{ game.death_limit }}</td>
+                <td>{{ game.get_size_display }}</td>
+                <td>
+                    {% for p in game.players.all %}
+                        {{p}}
+                    {% endfor %}
+                </td>
                 <td>
                     {% if not user.in_game %}
                     <a href="{% url main:join_game game.id %}">Join</a>
                     {% else %}
-                    Join
+                    -
                     {% endif %}
                 </td>
             </tr>

@@ -12,7 +12,6 @@ import random
 MOVE_TIME = 1
 EXPLOSION_TIME = 4
 RESPOWN_TIME = 10
-DEATH_LIMIT = 1
 
 GS_WAITING = 0
 GS_PLAYING = 1
@@ -92,7 +91,7 @@ class Player(models.Model):
         }
         self.game.send_players(msg);  
         
-        if self.death_count >= DEATH_LIMIT:
+        if self.death_count >= self.game.death_limit:
             self.game.finish()
         
     def update_move_time(self):
@@ -159,6 +158,7 @@ class Game(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     started = models.DateTimeField(null=True, blank=True)
     finished = models.DateTimeField(null=True, blank=True)
+    death_limit = models.IntegerField(default=10)
     
     objects = models.Manager()
     are_waiting = QueryManager(status=GS_WAITING)

@@ -62,7 +62,7 @@ def list_games(request):
     if cur_game:
         return redirect('main:index')
         
-    games = Game.are_waiting.all()
+    games = Game.are_waiting.select_related('playeres', 'players__user')
     playing = Game.are_playing.all()
     return locals()
 

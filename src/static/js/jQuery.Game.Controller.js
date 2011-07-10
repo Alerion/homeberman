@@ -64,6 +64,7 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
             }else{
                 this.enemies[msg.player_id].kill();
             }
+            this.updatePanel();
             break;
         }
     },
