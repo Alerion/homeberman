@@ -1,5 +1,6 @@
 from utils.decorators import render_to
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 from main.models import Game, Cell, Player, CT_EMPTY, CT_WALL
 from accounts.models import User
 from django.shortcuts import redirect
@@ -18,9 +19,24 @@ def index(request):
         'ORBITED_HTTP_SOCKET': settings.ORBITED_HTTP_SOCKET
     }
 
-@render_to('main/list.html')
+@render_to('main/game_list.html')
 def list_games(request):
-    return {}
+    games = Game.are_waiting.all()
+    playing = Game.are_playing.all()
+    return locals()
+
+def join_game(request, id):
+    user = request.user
+    old_game = user.get_current_game()
+    if old_game:
+        redirect(reverse('main:index')
+    game = get_object_or_404(Game.are_waiting, id=id)
+    if game.players.all().count() >= game.max_players:
+        redirect(reverse('main:list_games')
+
+    player = Player(user=user, game=game)
+    return redirect('main:index')
+
 
 def generate(game, user):
     width = 30
