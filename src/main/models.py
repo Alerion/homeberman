@@ -11,7 +11,7 @@ import random
 from django.conf import settings
 
 MOVE_TIME = settings.MOVE_TIME
-EXPLOSION_TIME = 4
+EXPLOSION_TIME = 2
 RESPOWN_TIME = 10
 GAME_START_WAITING = 60 #seconds
 
