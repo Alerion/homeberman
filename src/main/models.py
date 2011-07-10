@@ -9,7 +9,7 @@ from datetime import datetime
 import time
 import random
 
-MOVE_TIME = 0.5
+MOVE_TIME = 0.7
 EXPLOSION_TIME = 4
 RESPOWN_TIME = 10
 
