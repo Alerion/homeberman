@@ -1,10 +1,8 @@
 {% extends 'base.html' %}
 
-{% block head %}{% endblock %}
-
 {% block body %}
     {% if not user.in_game %}
-    <a href="{% url main:add_game %}" title="Add game">Создать игру</a>
+    <a class="button" href="{% url main:add_game %}" title="Add game">Создать игру</a>
     {% endif %}
     
     <table>
@@ -22,7 +20,7 @@
                 <td>{{ game.get_size_display }}</td>
                 <td>
                     {% for p in game.players.all %}
-                        {{p}}
+                        {{ p }}
                     {% endfor %}
                 </td>
                 <td>
