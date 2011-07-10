@@ -19,9 +19,10 @@ def index(request):
         'ORBITED_HTTP_SOCKET': settings.ORBITED_HTTP_SOCKET
     }
 
-@render_to('main/list.html')
+@render_to('main/game_list.html')
 def list_games(request):
-    return {}
+    games = Game.waiting()
+    return locals()
 
 def generate(game, user):
     width = 30
