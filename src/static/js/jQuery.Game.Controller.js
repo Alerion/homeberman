@@ -15,7 +15,7 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
         GameApi.load_players(this.initPlayers, this);
         this.map.on('cellclick', this.onCellClick, this);
         var that = this;
-        jQuery('body').keypress(function(event){that.onKeyPress(event); return false;});
+        jQuery(document).keypress(function(event){return that.onKeyPress(event)});
         this.stomp.on('user', this.onServerEvent, this);
     },
     onServerEvent: function(msg){
@@ -60,22 +60,35 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
         )
     },
     onKeyPress: function(event){
+        var handled = false;
+
         switch(event.which){
-            case 32:
+            case 113:
             this.createBomb();
+            handled = true;
             break;
+            
             case 119:
             this.move(0, -1);
+            handled = true;
             break;
+            
             case 115:
             this.move(0, 1);
+            handled = true;
             break;
+            
             case 97:
             this.move(-1, 0);
+            handled = true;
             break;
+            
             case 100:
             this.move(1, 0);
+            handled = true;
             break;
+            
+            return ! handled;
         }
     },
     move: function(dx, dy){
