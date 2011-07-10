@@ -13,6 +13,7 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
     left_button: null,
     right_button: null,
     bomb_button: null,
+    last_move_time: null,
     constructor : function(config){
         jQuery.extend(this, config);
         jQuery.Game.Controller.superclass.constructor.call(this, config);
@@ -21,6 +22,7 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
     init: function(){
         var that = this;
         
+        this.last_move_time = +(new Date());
         GameApi.load_players(this.initPlayers, this);
         this.map.on('cellclick', this.onCellClick, this);
         jQuery(document).keypress(function(event){return that.onKeyPress(event)});
@@ -195,11 +197,13 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
             this.createBomb();
             return;
         };
-        
-        if ( ! this.player.isDead && this.canMove(cell)){
+        var td = +(new Date()) - this.last_move_time;
+
+        if ( ! this.player.isDead && this.canMove(cell) && (td >= MOVE_TIME*1000*0.8)){
             GameApi.move(cell.x, cell.y, function(response){
                 if (response){
                     this.player.setCell(cell);
+                    this.last_move_time = +(new Date());
                 }
             }, this);
         }
