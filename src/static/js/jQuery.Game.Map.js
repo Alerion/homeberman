@@ -76,7 +76,9 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         this.node.html('☢');
     },    
     drawPlayer: function(){
-        if (this.player.isPlayer){
+        if (this.player.isDead){
+            this.node.html('☦');
+        }else if (this.player.isPlayer){
             this.node.html('♞');
         }else{
             this.node.html('♿');

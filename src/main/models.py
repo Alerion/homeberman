@@ -38,6 +38,19 @@ class Player(models.Model):
     class Meta:
         unique_together = (('game', 'user'),)
     
+    def __unicode__(self):
+        return unicode(self.user)
+    
+    def kill(self):
+        self.is_dead = True
+        self.save()
+
+        msg = {
+            'event': 'kill',
+            'player_id': self.id
+        }
+        self.game.send_players(msg);  
+    
     def update_move_time(self):
         self.last_move_time = time.time()
         self.save()
@@ -89,7 +102,8 @@ class Player(models.Model):
             'id': self.pk,
             'name': unicode(self.user),
             'x': self.cell.x,
-            'y': self.cell.y                     
+            'y': self.cell.y,
+            'is_dead': self.is_dead
         }
 
 class Game(models.Model):
@@ -150,9 +164,23 @@ class Cell(models.Model):
     def can_move(self):
         return self.type != CT_WALL
     
+    def get_nearest(self):
+        Q = models.Q
+        return Cell.objects.filter(Q(x=self.x, y=self.y-1) \
+                            |Q(x=self.x+1, y=self.y) \
+                            |Q(x=self.x, y=self.y+1) \
+                            |Q(x=self.x-1, y=self.y))
+    
     def explode(self):
+        cells = list(self.get_nearest())
+        cells.append(self)
+        
+        for player in self.game.player_set.filter(cell__in=cells):
+            player.kill()
+        
         self.bomb_time = None
         self.save()
+        
         msg = {
             'event': 'bomb_explosion',
             'bomb_id': self.key()

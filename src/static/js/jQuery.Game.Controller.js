@@ -34,18 +34,30 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
             case 'bomb_explosion':
             this.map.explodeBomb(msg.bomb_id);
             break;
+            
+            case 'kill':
+            if (msg.player_id == this.player.id){
+                this.player.kill();
+            }else{
+                this.enemies[msg.player_id].kill();
+            }
+            break;
         }
     },
     initPlayers: function(data){
         this.player = new jQuery.Game.Player({
+            id: data.player.id,
             name: data.player.name,
-            cell: this.map.getCell(data.player.x, data.player.y)
+            cell: this.map.getCell(data.player.x, data.player.y),
+            isDead: data.player.is_dead
         });
         for (var i=0, len=data.enemies.length; i<len; i++){
             var e = data.enemies[i];
             this.enemies[e.id] = new jQuery.Game.Enemy({
+                id: e.id,
                 name: e.name,
-                cell: this.map.getCell(e.x, e.y)
+                cell: this.map.getCell(e.x, e.y),
+                isDead: e.is_dead
             });
         }
     },
