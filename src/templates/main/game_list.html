@@ -3,9 +3,8 @@
 {% block head %}{% endblock %}
 
 {% block body %}
-    <div>
-        Hello {{ user }} | <a href="{% url accounts:logout %}?next={{ request.path_info|urlencode }}">Logout</a>
-    </div>
+    <a href="{% url main:add_game %}" title="Add game">Create new game</a>
+
     <ul class='games new'>
         {% for game in games %}
             <li><a href="{% url main:join_game game.id %}">#{{ game.id }} {{ game.name }}</a></li>

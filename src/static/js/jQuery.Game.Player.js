@@ -14,7 +14,7 @@ jQuery.Game.BasePlayer = jQuery.inherit(jQuery.util.Observable, {
         this.cell.setPlayer(this);
     },
     setCell: function(cell){
-        this.cell && this.cell.setPlayer();
+        this.cell && this.cell.removePlayer(this);
         this.cell = cell;
         this.cell.setPlayer(this);
     },

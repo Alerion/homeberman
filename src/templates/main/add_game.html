@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+    <form method="POST">
+        {{ form.as_ul }}
+        {% csrf_token %}
+        <input type='submit' />
+    </form>
+{% endblock %}

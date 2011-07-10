@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+    <div>
+        <table>
+            <thead>
+                <td>Game</td>
+                <td>Finished</td>
+            </thead>
+            {% for game in games %}
+                <tr>
+                    <td><a href="{% url main:finished game.pk %}">{{ game }}</a></td>
+                    <td>{{ game.finished }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

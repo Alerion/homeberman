@@ -5,10 +5,14 @@ from django.db import models
 from accounts.models import User
 from utils.stomp_utils import send_user
 from model_utils.managers import QueryManager
+from datetime import datetime
 import time
+import random
 
 MOVE_TIME = 1
 EXPLOSION_TIME = 4
+RESPOWN_TIME = 10
+DEATH_LIMIT = 1
 
 GS_WAITING = 0
 GS_PLAYING = 1
@@ -35,6 +39,8 @@ class Player(models.Model):
     game = models.ForeignKey('Game', related_name='players')
     is_dead = models.BooleanField(default=False)
     last_move_time = models.BigIntegerField(default=0)
+    death_time = models.BigIntegerField(default=0)
+    death_count = models.IntegerField(default=0)
     
     class Meta:
         unique_together = (('game', 'user'),)
@@ -42,16 +48,53 @@ class Player(models.Model):
     def __unicode__(self):
         return unicode(self.user)
     
-    def kill(self):
-        self.is_dead = True
+    def _get_respown_cell(self):
+        w, h = self.game.get_size()
+        
+        side = random.randrange(3)
+        if side == 0:
+            x = 0
+            y = random.randrange(h)
+        elif side == 1:
+            x = w-1
+            y = random.randrange(h)
+        elif side == 2:
+            x = random.randrange(w)
+            y = 0
+        else:
+            x = random.randrange(w)
+            y = h-1
+        
+        return self.game.cells.get(x=x, y=y)
+        
+    def respown(self):
+        self.cell = self._get_respown_cell()
+        self.death_time = 0
+        self.is_dead = False
         self.save()
 
+        msg = {
+            'event': 'respown',
+            'player_id': self.pk,
+            'cell': self.cell.record()
+        }
+        self.game.send_players(msg);
+    
+    def kill(self):
+        self.is_dead = True
+        self.death_time = time.time()
+        self.death_count = self.death_count+1
+        self.save()
+        
         msg = {
             'event': 'kill',
             'player_id': self.id
         }
         self.game.send_players(msg);  
-    
+        
+        if self.death_count >= DEATH_LIMIT:
+            self.game.finish()
+        
     def update_move_time(self):
         self.last_move_time = time.time()
         self.save()
@@ -72,7 +115,7 @@ class Player(models.Model):
         return True        
     
     def can_move(self):
-        return not self.is_dead and \
+        return not self.is_dead and self.game.is_plaing() and \
             (time.time() - self.last_move_time) > MOVE_TIME
     
     def move_to(self, x, y):
@@ -115,11 +158,29 @@ class Game(models.Model):
     winner = models.ForeignKey(Player, related_name='winned_games', null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     started = models.DateTimeField(null=True, blank=True)
+    finished = models.DateTimeField(null=True, blank=True)
     
+    objects = models.Manager()
     are_waiting = QueryManager(status=GS_WAITING)
     are_playing = QueryManager(status=GS_PLAYING)
-    objects = models.Manager()
+    are_finished = QueryManager(status=GS_FINISHED)
+    
+    def __unicode__(self):
+        return self.name or 'Game #%s' % self.pk 
+    
+    def is_plaing(self):
+        return self.status == GS_PLAYING
+    
+    def finish(self):
+        self.status = GS_FINISHED
+        self.finished = datetime.now()
+        self.save()
 
+        msg = {
+            'event': 'finish'
+        }
+        self.send_players(msg)
+    
     def send_players(self, msg, exclude=None):
         qs = self.players.select_related('user')
         
@@ -180,7 +241,7 @@ class Cell(models.Model):
         cells = list(self.get_nearest())
         cells.append(self)
         
-        for player in self.game.players.filter(cell__in=cells):
+        for player in self.game.players.filter(cell__in=cells, is_dead=False):
             player.kill()
         
         self.bomb_time = None
