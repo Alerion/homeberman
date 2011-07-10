@@ -21,11 +21,21 @@ def index(request):
 
 @render_to('main/game_list.html')
 def list_games(request):
-    games = Game.are_waiting()
-    playing = Game.are_playing()
+    games = Game.are_waiting.all()
+    playing = Game.are_playing.all()
     return locals()
 
 def join_game(request, id):
+    user = request.user
+    old_game = user.get_current_game()
+    if old_game:
+        redirect(reverse('main:index')
+    
+    game = get_object_or_404(Game.are_waiting, id=id)
+    if game.players.all().count() >= game.max_players:
+        redirect(reverse('main:list_games')
+
+    player = Player(user=user, game=game)
     return redirect('main:index')
 
 
