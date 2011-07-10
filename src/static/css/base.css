@@ -78,7 +78,7 @@ form, table {
 	margin-top: 24px;
 }
 
-.nav li a,
+.nav a,
 .button {
   color: rgba(0,0,0,0.72)!important;
   font-size: 1em;
@@ -99,8 +99,8 @@ form, table {
   padding: 0 0.5em;
   cursor: pointer;
   display: inline-block;
-  position: relative;
-  background-color: rgba(255,255,255,0.1);
+  position: relative; 
+  background-color: rgba(113,153,0,0.1);
   -moz-background-clip: padding-box;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;

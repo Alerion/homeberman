@@ -21,12 +21,12 @@
       <div class="wrap">
         {% if user.is_authenticated %}
         <div class='nav'>
-            Привет {{ user }} | 
-            <a href="{% url main:games_history %}">История игр</a> |
+            Привет {{ user }}  
             {% if not user.get_current_game %}
-                <a href="{% url main:list_games %}">Список игр</a> |
+                <a class='button list' href="{% url main:list_games %}">Список игр</a> 
             {% endif %}
-            <a href="{% url accounts:logout %}?next={{ request.path_info|urlencode }}">Выйти</a>
+            <a class='button hist' href="{% url main:games_history %}">История игр</a> 
+            <a class='button quit' href="{% url accounts:logout %}?next={{ request.path_info|urlencode }}">Выйти</a>
         </div>
 		<hr />
         {% endif %}
