@@ -86,7 +86,9 @@ class Game(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     started = models.DateTimeField(null=True, blank=True)
     
-    waiting = QueryManager(status=GS_WAITING)
+    are_waiting = QueryManager(status=GS_WAITING)
+    are_playing = QueryManager(status=GS_PLAYING)
+    objects = models.Manager()
 
     def send_players(self, msg, exclude=None):
         qs = self.player_set.select_related('user')

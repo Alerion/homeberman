@@ -8,7 +8,7 @@
     </div>
     <ul class='games'>
         {% for game in games %}
-            <li><a href="{% url join game.id %}">#{{ game.id }} {{ game.name }}</a></li>
+            <li><a href="{% url join_game game.id %}">#{{ game.id }} {{ game.name }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}

@@ -21,8 +21,13 @@ def index(request):
 
 @render_to('main/game_list.html')
 def list_games(request):
-    games = Game.waiting()
+    games = Game.are_waiting()
+    playing = Game.are_playing()
     return locals()
+
+def join_game(request, id):
+    return redirect('main:index')
+
 
 def generate(game, user):
     width = 30
