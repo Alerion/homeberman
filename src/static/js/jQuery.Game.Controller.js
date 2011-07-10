@@ -80,7 +80,9 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
             
             case 'bomb_put':
             var cell = this.map.getCell(msg.cell.id);
-            this.map.addBomb(cell);
+            if (cell != this.player.cell){
+                this.map.addBomb(cell);
+            }
             break;
             
             case 'bomb_explosion':

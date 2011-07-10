@@ -112,7 +112,7 @@ class Player(models.Model):
             'event': 'bomb_put',
             'cell': self.cell.record()
         }
-        self.game.send_players(msg, self);        
+        self.game.send_players(msg);        
         return True        
     
     def can_move(self):
