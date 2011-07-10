@@ -1,9 +1,10 @@
 .map {
     position: relative;
+    border: 4px dashed black;
+    padding: 2px;
 }
 
 .map .cell {
-    background-color: #DDD;
     position: absolute;
     cursor: pointer;
 }
@@ -11,6 +12,10 @@
 
 .map .wall {
 	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABhQTFRFvG1Hu1ornEsjyHRIz4NaiDsXql05wHpaRj+V+QAAAItJREFUeNpskFsOwCAIBFeR5f43Lg+pNunghyYyrMICHPIoAcdAroHlAATJ2dBEgNprMzlJ7Bp+3WCoEa7byGpw6QRdeuka2LIlfmnDbO+cG89pCzH2eCfz/k/OCZ5nX5FeXcywLG/XaPe6evSrK2c47OSsr4ujjI/YB8UHhbdW5wyLD9IMm29/BBgABusE2NwikLEAAAAASUVORK5CYII=);
+   -moz-box-shadow: 2px 2px 0px #100; 
+  -webkit-box-shadow: 2px 2px 0px #100; 
+          box-shadow: 2px 2px 0px #100; 	
+	
 }
 .map .bomb {
 	background-repeat: no-repeat;
