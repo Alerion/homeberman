@@ -110,9 +110,11 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         this.node.attr('class', 'cell grave');
     },
     drawExplosion: function(){
-        this.node.html('☠');
-        this.node.attr('class', 'cell explosion');
-        this.dellayedDraw.delay(1000);
+        if (this.isMoveable()){
+            this.node.html('☠');
+            this.node.attr('class', 'cell explosion');
+            this.dellayedDraw.delay(700);            
+        }
     }
 });
 

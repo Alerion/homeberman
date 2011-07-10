@@ -292,7 +292,8 @@ class Cell(models.Model):
         
         msg = {
             'event': 'bomb_explosion',
-            'bomb_id': self.key()
+            'bomb_id': self.key(),
+            'explode_ids': [c.key() for c in cells if c != self]
         }
         self.game.send_players(msg);
     
