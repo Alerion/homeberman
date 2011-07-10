@@ -87,7 +87,7 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         this.node.attr('class', 'cell wall');
     },
     drawBomb: function(){
-        //this.node.html('☢');
+        this.node.html('');
         this.node.attr('class', 'cell bomb');
     },    
     drawPlayer: function(){
@@ -120,7 +120,7 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
     node: null,
     width: null,
     height: null,
-    cell_size: 20,
+    cell_size: 25,
     cells: {},
     bombs: {},
     constructor : function(config){
