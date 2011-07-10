@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 
 {% block head %}
+
+	<link rel="shortcut icon" href="{{ MEDIA_URL }}favicon.ico" type="image/x-icon" />
+	<link rel="icon" href="{{ MEDIA_URL }}favicon.ico" type="image/x-icon" />
+
     <link href="{{ MEDIA_URL }}js/jgrowl/jquery.jgrowl.css" media="all" type="text/css" rel="stylesheet" />
     <link href="{{ MEDIA_URL }}css/base.css" media="all" type="text/css" rel="stylesheet" />
     <link href="{{ MEDIA_URL }}css/map.css" media="all" type="text/css" rel="stylesheet" />
@@ -62,6 +66,32 @@
 {% endblock %}
 
 {% block body %}
+	<table border="1" width="100%">
+		<tr>
+			<td rowspan="2">
+				<div class="map"></div>
+			</td>
+			<td>
+				<div>
+					Hello {{ user }} | <a href="{% url accounts:logout %}?next={{ request.path_info|urlencode }}">Logout</a>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td >
+				<div class="panel">
+					W - UP<br />
+					S - DOWN<br />
+					A - LEFT<br />
+					D - RIGHT(does not work in FF) or click<br />
+					Q - BOMB<br />
+					Move time is 1 sec,<br />
+					so you can move only once per second.<br />
+					Bombs in development.
+				</div>
+			</td>
+		</tr>
+	</table>
     {{ block.super }}
     {% block content %}{% endblock %}
 {% endblock %}
