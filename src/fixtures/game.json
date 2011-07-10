@@ -3,10 +3,10 @@
         "pk": 1, 
         "model": "main.player", 
         "fields": {
-            "cell": 1, 
+            "cell": 170, 
             "game": 1, 
             "user": 1, 
-            "last_move_time": 0, 
+            "last_move_time": 1310255278, 
             "is_dead": false
         }
     }, 
@@ -14,10 +14,10 @@
         "pk": 2, 
         "model": "main.player", 
         "fields": {
-            "cell": 581, 
+            "cell": 506, 
             "game": 1, 
             "user": 2, 
-            "last_move_time": 0, 
+            "last_move_time": 1310255088, 
             "is_dead": false
         }
     }, 
@@ -53,7 +53,7 @@
             "started": "2011-07-10 00:45:50", 
             "winner": null, 
             "max_players": 10, 
-            "size": "small"
+            "size": "big"
         }
     }, 
     {

@@ -83,7 +83,7 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
     node: null,
     width: null,
     height: null,
-    cell_size: 25,
+    cell_size: 20,
     cells: {},
     constructor : function(config){
         this.addEvents('cellclick');
@@ -117,7 +117,7 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
         this.fireEvent('cellclick', cell, this);
     },
     getCell: function(x, y){
-        if (x && y){
+        if (typeof x != 'undefined' && typeof y != 'undefined'){
             return this.cells[x+'_'+y];
         }
         return this.cells[x];
