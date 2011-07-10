@@ -29,9 +29,9 @@ GAME_SIZE_CHOICES = (
 )
 
 class Player(models.Model):
-    user = models.ForeignKey(User)
-    cell = models.ForeignKey('Cell')
-    game = models.ForeignKey('Game')
+    user = models.ForeignKey(User, related_name='players')
+    cell = models.ForeignKey('Cell', related_name='players')
+    game = models.ForeignKey('Game', related_name='players')
     is_dead = models.BooleanField(default=False)
     last_move_time = models.BigIntegerField(default=0)
     
