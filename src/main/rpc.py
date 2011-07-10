@@ -16,7 +16,7 @@ class GameApiClass(object):
     
     def load_players(self, user, player, game):
         enemies = []
-        for p in game.player_set.exclude(pk=player.pk):
+        for p in game.players.exclude(pk=player.pk):
             enemies.append(p.record())
         
         return {

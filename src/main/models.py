@@ -121,7 +121,7 @@ class Game(models.Model):
     objects = models.Manager()
 
     def send_players(self, msg, exclude=None):
-        qs = self.player_set.select_related('user')
+        qs = self.players.select_related('user')
         
         if exclude:
             qs = qs.exclude(pk=exclude.pk)
@@ -180,7 +180,7 @@ class Cell(models.Model):
         cells = list(self.get_nearest())
         cells.append(self)
         
-        for player in self.game.player_set.filter(cell__in=cells):
+        for player in self.game.players.filter(cell__in=cells):
             player.kill()
         
         self.bomb_time = None

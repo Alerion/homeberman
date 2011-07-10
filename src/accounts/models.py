@@ -13,7 +13,7 @@ class User(BaseUser):
         game = self.get_current_game()
         
         if game:
-            return game.player_set.get(user=self)
+            return game.players.get(user=self)
     
     def get_current_game(self):
         from main.models import Game, GS_PLAYING
