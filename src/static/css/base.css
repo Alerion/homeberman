@@ -168,3 +168,12 @@ px      68    160    252    344    436    */
 	}
 	
 }
+.panel table td {
+    vertical-align: middle;
+    text-align: center;
+    padding: 2px;
+}
+
+table thead td {
+    background-color: #CCC;
+}

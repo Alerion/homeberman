@@ -4,15 +4,15 @@
 
 {% block body %}
     {% if not user.in_game %}
-    <a href="{% url main:add_game %}" title="Add game">Create new game</a>
+    <a href="{% url main:add_game %}" title="Add game">Создать игру</a>
     {% endif %}
     
     <table>
         <tr>
-            <td>name</td>
-            <td>death limit</td>
-            <td>size</td>
-            <td>players</td>
+            <td>название</td>
+            <td>лимит смертей</td>
+            <td>размер карты</td>
+            <td>игроки</td>
             <td></td>
         </tr>
         {% for game in games %}
@@ -27,7 +27,7 @@
                 </td>
                 <td>
                     {% if not user.in_game %}
-                    <a href="{% url main:join_game game.id %}">Join</a>
+                    <a href="{% url main:join_game game.id %}">join</a>
                     {% else %}
                     -
                     {% endif %}
@@ -38,7 +38,7 @@
     
     <hr />
     <div>
-        Playing now: 
+        Текущие игры: 
         {% for game in playing %}
             {{ game }}
         {% endfor %}        
