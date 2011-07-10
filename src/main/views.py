@@ -28,11 +28,14 @@ def list_games(request):
 def join_game(request, id):
     user = request.user
     old_game = user.get_current_game()
+    
     if old_game:
-        redirect(reverse('main:index')
+        redirect('main:index')
+        
     game = get_object_or_404(Game.are_waiting, id=id)
+    
     if game.players.all().count() >= game.max_players:
-        redirect(reverse('main:list_games')
+        redirect('main:list_games')
 
     player = Player(user=user, game=game)
     return redirect('main:index')
