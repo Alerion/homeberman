@@ -155,6 +155,8 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
                 this.node.append(cell.node);
             }            
         }
+        this.node.css('width', this.width*this.cell_size);
+        this.node.css('height', this.height*this.cell_size);
     },
     onCellClick: function(cell){
         this.fireEvent('cellclick', cell, this);

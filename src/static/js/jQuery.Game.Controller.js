@@ -1,6 +1,7 @@
 jQuery.Game = jQuery.Game || {};
 
 jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
+    panelNode: null,
     map: null, //jQuery.Game.Map
     player: null, //jQuery.Game.Player
     enemies: {},
@@ -18,6 +19,12 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
         var that = this;
         jQuery(document).keypress(function(event){return that.onKeyPress(event)});
         this.stomp.on('user', this.onServerEvent, this);
+        this.updatePanel();
+    },
+    updatePanel: function(){
+        GameApi.load_panel(function(response){
+            this.panelNode.html(response);
+        }, this);
     },
     onServerEvent: function(msg){
         switch(msg.event){
