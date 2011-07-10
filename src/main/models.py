@@ -70,7 +70,7 @@ class Player(models.Model):
         self.cell = self.game.get_respown_cell()
         self.death_time = 0
         self.is_dead = False
-        self.last_move_time = 0
+        self.last_move_time = time.time()
         self.save()
 
         msg = {
@@ -152,10 +152,10 @@ class Player(models.Model):
         }
 
 class Game(models.Model):
-    name = models.CharField(max_length=140, null=True, blank=True)
+    name = models.CharField(max_length=140, null=True, blank=True, verbose_name=u'название')
     status = models.IntegerField(default=0, choices=GAME_STATUS_CHOICES)
     max_players = models.PositiveIntegerField(default=4)
-    size = models.CharField(default='small', choices=GAME_SIZE_CHOICES, max_length=10)
+    size = models.CharField(default='small', choices=GAME_SIZE_CHOICES, max_length=10, verbose_name=u'Размер')
     winner = models.ForeignKey(Player, related_name='winned_games', null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     started = models.DateTimeField(null=True, blank=True)
