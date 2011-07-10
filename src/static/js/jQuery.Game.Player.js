@@ -36,16 +36,3 @@ jQuery.Game.Enemy = jQuery.inherit(jQuery.Game.BasePlayer, {
         jQuery.Game.Enemy.superclass.init.call(this);
     }
 });
-
-jQuery.Game.Bomb = jQuery.inherit(jQuery.util.Observable, {
-    cell: null, //jQuery.Game.Cell
-    constructor : function(config){
-        jQuery.extend(this, config);
-        jQuery.Game.Bomb.superclass.constructor.call(this, config);
-        this.init();
-        this.id = this.cell.id;
-    },
-    init: function(){
-        this.cell.setBomb(this);
-    }
-});

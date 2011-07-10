@@ -27,6 +27,8 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         this.draw();
         var that = this;
         this.node.click(function(){that.onClick()});
+        
+        this.dellayedDraw = new jQuery.util.DelayedTask(this.draw, this);
     },
     draw: function(){
         if (this.player){
@@ -57,6 +59,10 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         this.bomb = bomb;
         this.draw();
     },
+    setExplosion: function(){
+        this.bomb = null;
+        this.drawExplosion();
+    },
     isMoveable: function(){
         return this.type != jQuery.Game.WALL;
     },
@@ -75,6 +81,10 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         }else{
             this.node.html('♿');
         }
+    },
+    drawExplosion: function(){
+        this.node.html('☠');
+        this.dellayedDraw.delay(1000);
     }
 });
 
@@ -132,5 +142,28 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
             cell: cell
         });
         this.bombs[bomb.id] = bomb;          
+    },
+    explodeBomb: function(bomb_id){
+        var bomb = this.bombs[bomb_id];
+        if (bomb){
+            bomb.explode();
+            delete this.bombs[bomb_id];
+        }
+    }
+});
+
+jQuery.Game.Bomb = jQuery.inherit(jQuery.util.Observable, {
+    cell: null, //jQuery.Game.Cell
+    constructor : function(config){
+        jQuery.extend(this, config);
+        jQuery.Game.Bomb.superclass.constructor.call(this, config);
+        this.init();
+        this.id = this.cell.id;
+    },
+    init: function(){
+        this.cell.setBomb(this);
+    },
+    explode: function(){
+        this.cell.setExplosion();
     }
 });

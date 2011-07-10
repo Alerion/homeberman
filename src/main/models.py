@@ -7,6 +7,7 @@ from utils.stomp_utils import send_user
 import time
 
 MOVE_TIME = 1
+EXPLOSION_TIME = 4
 
 GS_WAITING = 0
 GS_PLAYING = 1
@@ -149,10 +150,19 @@ class Cell(models.Model):
     def can_move(self):
         return self.type != CT_WALL
     
+    def explode(self):
+        self.bomb_time = None
+        self.save()
+        msg = {
+            'event': 'bomb_explosion',
+            'bomb_id': self.key()
+        }
+        self.game.send_players(msg);
+    
     def put_bomb(self):
         self.bomb_time = time.time()
         self.save()
-    
+        
     def record(self):
         return {
             'id': self.key(),
