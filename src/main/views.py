@@ -1,9 +1,8 @@
 from utils.decorators import render_to
 from django.conf import settings
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from main.models import Game, Cell, Player, CT_EMPTY, CT_WALL
 from accounts.models import User
-from django.shortcuts import redirect
 import random
 
 @render_to('main/index.html')
@@ -15,8 +14,16 @@ def index(request):
     #generate(game,request.user)
     
     return {
+        'game': game,
         'ORBITED_STOMP_SOCKET': settings.ORBITED_STOMP_SOCKET,
         'ORBITED_HTTP_SOCKET': settings.ORBITED_HTTP_SOCKET
+    }
+
+@render_to('main/finished.html')
+def finished(request, game_id):
+    game = get_object_or_404(Game.objects.select_related('players', 'players__user'), pk=game_id)
+    return {
+        'game': game
     }
 
 @render_to('main/game_list.html')

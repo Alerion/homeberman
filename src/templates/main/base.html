@@ -21,6 +21,8 @@
             $.jGrowl.error('ERROR: '+event.message);
         });
         
+        FINISH_URL = '{% url main:finished game.pk %}';
+        
         //Init STOMP
         STOMP_KEY = '{{ user.get_stomp_key }}';
         ORBITED_STOMP_SOCKET = {{ ORBITED_STOMP_SOCKET }};

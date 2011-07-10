@@ -9,9 +9,9 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
     x: null,
     y: null,
     type: null,
-    player: null, //jQuery.Game.BasePlayer
     bomb: null, //jQuery.Game.Bomb
     id: 'x_y',
+    playersNum: 0,
     constructor : function(config){
         this.addEvents('click');
         jQuery.extend(this, config);
@@ -19,6 +19,7 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         this.init();
     },
     init: function(){
+        this.players = {};
         this.node.css('width', this.size);
         this.node.css('height', this.size);
         this.node.css('top', this.y*this.size);
@@ -31,7 +32,7 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         this.dellayedDraw = new jQuery.util.DelayedTask(this.draw, this);
     },
     draw: function(){
-        if (this.player){
+        if (this.playersNum){
             this.drawPlayer();
             return
         };
@@ -43,6 +44,7 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
             case jQuery.Game.WALL:
             this.drawWall();
             break;
+            
             default:
             this.drawEmpty();
             break;            
@@ -52,8 +54,18 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         this.fireEvent('click', this)
     },
     setPlayer: function(player){
-        this.player = player;
-        this.draw();
+        if ( ! this.players[player.id]){
+            this.playersNum ++;
+            this.players[player.id] = player;
+            this.draw();            
+        }
+    },
+    removePlayer: function(player){
+        if (this.players[player.id]){
+            this.playersNum--;
+            delete this.players[player.id];
+            this.draw();         
+        }        
     },
     setBomb: function(bomb){
         this.bomb = bomb;
@@ -76,13 +88,20 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         this.node.html('☢');
     },    
     drawPlayer: function(){
-        if (this.player.isDead){
-            this.node.html('☦');
-        }else if (this.player.isPlayer){
-            this.node.html('♞');
-        }else{
-            this.node.html('♿');
+        for (key in this.players){
+            if (this.players[key].isPlayer && ! this.players[key].isDead){
+                this.node.html('♞');
+                return
+            }
         }
+        
+        for (key in this.players){
+            if ( ! this.players[key].isDead){
+                this.node.html('♿');
+                return
+            }
+        }
+        this.node.html('☦');
     },
     drawExplosion: function(){
         this.node.html('☠');

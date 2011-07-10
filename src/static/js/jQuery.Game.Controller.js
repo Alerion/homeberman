@@ -6,6 +6,7 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
     enemies: {},
     bombs: {},
     stomp: null, //jQuery.StompListener
+    finish_url: '',
     constructor : function(config){
         jQuery.extend(this, config);
         jQuery.Game.Controller.superclass.constructor.call(this, config);
@@ -20,6 +21,21 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
     },
     onServerEvent: function(msg){
         switch(msg.event){
+            case 'finish':
+            document.location = this.finish_url;
+            break;
+            
+            case 'respown':
+            if (this.player.id == msg.player_id){
+                var player = this.player;
+            }else{
+                var player = this.enemies[msg.player_id];
+            }
+            var cell = this.map.getCell(msg.cell.id);
+            player.isDead = false;
+            player.setCell(cell);            
+            break;
+            
             case 'user_moved':
             var player = this.enemies[msg.player_id];
             var cell = this.map.getCell(msg.cell.id);
