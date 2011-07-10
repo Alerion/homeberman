@@ -1,7 +1,7 @@
 from utils.decorators import render_to
 from django.conf import settings
 from django.shortcuts import get_object_or_404, redirect
-from main.models import MOVE_TIME
+from main.models import MOVE_TIME, EXPLOSION_TIME
 from accounts.models import User
 import random
 

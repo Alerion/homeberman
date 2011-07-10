@@ -182,6 +182,8 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
     createBomb: function(){
         if (this.player.isDead) return;
         
+        if (this.player.cell.bomb) return;
+        
         GameApi.put_bomb(this.player.cell.x, this.player.cell.y, function(response){
             if ( ! response) return;
             

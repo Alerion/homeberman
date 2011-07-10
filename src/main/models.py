@@ -8,8 +8,9 @@ from model_utils.managers import QueryManager
 from datetime import datetime
 import time
 import random
+from django.conf import settings
 
-MOVE_TIME = 0.7
+MOVE_TIME = settings.MOVE_TIME
 EXPLOSION_TIME = 4
 RESPOWN_TIME = 10
 
@@ -210,7 +211,7 @@ class Game(models.Model):
         for x in range(width):
             for y in range(height):
                 cell = Cell(game=self)
-                if random.random() < 0.2 and x not in (0, width-1) and y not in (0, height-1):
+                if random.random() < 0.22 and x not in (0, width-1) and y not in (0, height-1):
                     cell.type = CT_WALL
                 else:
                     cell.type = CT_EMPTY

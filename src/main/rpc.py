@@ -1,7 +1,5 @@
-from utils.rpc import Error, Msg, RpcExceptionEvent, add_request_to_kwargs
 from utils.rpc import RpcRouter
-from utils.stomp_utils import stomp_send
-from main.models import CT_EMPTY, CT_WALL
+from main.models import CT_EMPTY, CT_WALL, EXPLOSION_TIME
 from django.template.loader import render_to_string
 import random
     
@@ -10,7 +8,10 @@ class GameApiClass(object):
     height = 20
     
     def load_panel(self, user, player, game):
-        return render_to_string('main/_panel.html', {'game': game})
+        return render_to_string('main/_panel.html', {
+            'game': game, 
+            'EXPLOSION_TIME': EXPLOSION_TIME
+        })
     
     def put_bomb(self, x, y, user, player, game):
         return player.put_bomb()

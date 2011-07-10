@@ -8,7 +8,7 @@ sys.path.insert(0, rel('..', 'lib'))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-
+MOVE_TIME = 0.5
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
