@@ -93,7 +93,7 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
     drawPlayer: function(){
         for (key in this.players){
             if (this.players[key].isPlayer && ! this.players[key].isDead){
-                this.node.html('♞');
+                //this.node.html('♞');
                 this.node.attr('class', 'cell player');
                 return
             }
@@ -101,7 +101,7 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         
         for (key in this.players){
             if ( ! this.players[key].isDead){
-                this.node.html('♿');
+                //this.node.html('♿');
                 this.node.attr('class', 'cell enemy');
                 return
             }
@@ -111,7 +111,7 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
     },
     drawExplosion: function(){
         if (this.isMoveable()){
-            this.node.html('☠');
+            //this.node.html('☠');
             this.node.attr('class', 'cell explosion');
             this.dellayedDraw.delay(700);            
         }
