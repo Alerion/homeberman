@@ -50,7 +50,7 @@ class CustomRouter(RpcRouter):
         self.actions = {
             'GameApi': GameApiClass()
         }
-        self.enable_buffer = 50
+        self.enable_buffer = 100
         self.max_retries = 1
     
     def extra_kwargs(self, request, *args, **kwargs):

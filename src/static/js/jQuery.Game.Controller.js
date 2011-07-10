@@ -87,8 +87,15 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
             
             case 'bomb_explosion':
             this.map.explodeBomb(msg.bomb_id);
+
             for (var i=0, len=msg.explode_ids.length; i<len; i++){
-                this.map.getCell(msg.explode_ids[i]).drawExplosion();
+                var cell = this.map.getCell(msg.explode_ids[i]);
+                if (cell){
+                    cell.drawExplosion();
+                }else{
+                    log(msg.explode_ids[i])
+                }
+                
             }
             break;
             

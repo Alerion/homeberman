@@ -123,6 +123,9 @@ class Player(models.Model):
         if not self.can_move():
             return False
         
+        if self.cell.x == x and self.cell.y == y:
+            return False
+        
         cell = self.game.get_cell(x=x, y=y)
         
         if not cell or not cell.can_move():
