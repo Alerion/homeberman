@@ -21,8 +21,8 @@ def stomp_send(data, destination):
         stomp_connection.connect()
     stomp_connection.send(json.dumps(data), destination=destination)
     
-def send_user(data, user):
-    dest = '/user/%s' % user.get_stomp_key()
+def send_user(data, game):
+    dest = '/user/%s' % game.stomp_key()
     try:
         stomp_send(data, dest)
     except (ConnectionClosedException, NotConnectedException):
