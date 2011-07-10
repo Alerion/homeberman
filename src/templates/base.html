@@ -20,7 +20,7 @@
     <body>
       <div class="wrap">
         {% if user.is_authenticated %}
-        <div>
+        <div class='nav'>
             Привет {{ user }} | 
             <a href="{% url main:games_history %}">История игр</a> |
             {% if not user.get_current_game %}
