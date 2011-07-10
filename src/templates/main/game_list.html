@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-{% block head %}{% endblock %}
-
 {% block body %}
     {% if not user.in_game %}
     <a class="button" href="{% url main:add_game %}" title="Add game">Создать игру</a>
