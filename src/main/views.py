@@ -5,6 +5,11 @@ from main.models import Game, Cell, Player, CT_EMPTY, CT_WALL
 from accounts.models import User
 import random
 
+from main.models import Game, Cell, Player, CT_EMPTY, CT_WALL
+from accounts.models import User
+from forms import GameForm
+
+
 @render_to('main/index.html')
 def index(request):
     game = request.user.get_current_game()
@@ -26,6 +31,27 @@ def finished(request, game_id):
         'game': game
     }
 
+@render_to('main/add_game.html')
+def add_game(request):
+    user = request.user
+    old_game = user.get_current_game()
+    
+    if old_game:
+        redirect('main:index')
+        
+    print request.POST
+    form = GameForm(request.POST or None)
+
+    print form.errors
+    print form.is_valid()
+    if form.is_valid():
+        game = form.save()
+        player = Player(user=user, game=game)
+        player.save()
+        return redirect('main:index')
+
+    return dict(form=form)
+
 @render_to('main/game_list.html')
 def list_games(request):
     games = Game.are_waiting.all()
@@ -45,6 +71,7 @@ def join_game(request, id):
         redirect('main:list_games')
 
     player = Player(user=user, game=game)
+    player.save()
     return redirect('main:index')
 
 
