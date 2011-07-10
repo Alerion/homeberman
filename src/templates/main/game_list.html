@@ -9,6 +9,7 @@
         <tr align="center" style="font: bold 110% serif; background: #aabbbb;">
             <td>Название</td>
             <td>Лимит смертей</td>
+            <td>Кол. человек</td>
             <td>Размер карты</td>
             <td>Игроки</td>
             <td></td>
@@ -17,6 +18,7 @@
             <tr align="center">
                 <td>{{ game }}</td>
                 <td>{{ game.death_limit }}</td>
+                <td>{{ game.max_players }}</td>
                 <td>{{ game.get_size_display }}</td>
                 <td>
                     {% for p in game.players.all %}
