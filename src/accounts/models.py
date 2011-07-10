@@ -18,7 +18,7 @@ class User(BaseUser):
     def get_current_game(self):
         from main.models import Game, GS_PLAYING
         try:
-            return Game.are_playing.filter(player__user=self)[:1].get()
+            return Game.are_playing.filter(players__user=self)[:1].get()
         except Game.DoesNotExist:
             pass
     
