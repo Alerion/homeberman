@@ -84,8 +84,4 @@ def join_game(request, id):
         
     game.add_user(user)
 
-    if game.players.all().count() >= game.max_players:
-        game.start()
-        return redirect('main:index')
-    
     return redirect('main:list_games')     

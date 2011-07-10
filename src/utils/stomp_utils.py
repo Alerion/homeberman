@@ -26,4 +26,5 @@ def send_user(data, user):
     try:
         stomp_send(data, dest)
     except (ConnectionClosedException, NotConnectedException):
+        print 'STOMP ERROR'
         pass
