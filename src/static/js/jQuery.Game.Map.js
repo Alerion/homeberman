@@ -87,7 +87,7 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         this.node.attr('class', 'cell wall');
     },
     drawBomb: function(){
-        this.node.html('☢');
+        //this.node.html('☢');
         this.node.attr('class', 'cell bomb');
     },    
     drawPlayer: function(){
