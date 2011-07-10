@@ -6,6 +6,7 @@
     {% if not user.in_game %}
     <a href="{% url main:add_game %}" title="Add game">Create new game</a>
     {% endif %}
+    
     <table>
         {% for game in games %}
             <tr>
@@ -21,11 +22,6 @@
         {% endfor %}        
     </table>
     
-    <ul class='games new'>
-        {% for game in games %}
-            <li><a href="{% url main:join_game game.id %}">{{ game }}</a></li>
-        {% endfor %}
-    </ul>
     <hr />
     <div>
         Playing now: 

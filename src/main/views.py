@@ -43,9 +43,8 @@ def add_game(request):
     old_game = user.get_current_game()
     
     if old_game:
-        redirect('main:index')
+        return redirect('main:index')
         
-    print request.POST
     form = GameForm(request.POST or None)
 
     if form.is_valid():
@@ -58,6 +57,11 @@ def add_game(request):
 
 @render_to('main/game_list.html')
 def list_games(request):
+    cur_game = request.user.get_current_game()
+
+    if cur_game:
+        return redirect('main:index')
+        
     games = Game.are_waiting.all()
     playing = Game.are_playing.all()
     return locals()
@@ -67,7 +71,7 @@ def join_game(request, id):
     old_game = user.get_current_game()
     
     if old_game:
-        redirect('main:index')
+        return redirect('main:index')
     
     if user.in_game():
         return redirect('main:list_games')
@@ -75,7 +79,7 @@ def join_game(request, id):
     game = get_object_or_404(Game.are_waiting, id=id)
     
     if game.players.all().count() >= game.max_players:
-        redirect('main:list_games')
+        return redirect('main:list_games')
         
     game.add_user(user)
 
@@ -83,41 +87,4 @@ def join_game(request, id):
         game.start()
         return redirect('main:index')
     
-    return redirect('main:list_games')
-    
-    
-
-def generate(game, user):
-    width = 30
-    height = 20
-    
-    for x in range(width):
-        for y in range(height):
-            cell = Cell(game=game)
-            if random.random() < 0.2 and x not in (0, width-1) and y not in (0, height-1):
-                cell.type = CT_WALL
-            else:
-                cell.type = CT_EMPTY
-
-            cell.x = x
-            cell.y = y
-            cell.save()
-    
-    player = Player(user=user, game=game)
-    player.cell = Cell.objects.get(x=0, y=0, game=game)
-    player.save()
-    
-    user1 = User.objects.get(pk=2)
-    player = Player(user=user1, game=game)
-    player.cell = Cell.objects.get(x=width-1, y=0, game=game)
-    player.save()
-    
-    user1 = User.objects.get(pk=3)
-    player = Player(user=user1, game=game)
-    player.cell = Cell.objects.get(x=0, y=height-1, game=game)
-    player.save()
-        
-    user1 = User.objects.get(pk=4)
-    player = Player(user=user1, game=game)
-    player.cell = Cell.objects.get(x=width-1, y=height-1, game=game)
-    player.save()            
+    return redirect('main:list_games')     

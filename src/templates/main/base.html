@@ -68,28 +68,21 @@
 {% block body %}
 	<table border="1" width="100%">
 		<tr>
-			<td rowspan="2">
+			<td>
 				<div class="map"></div>
 			</td>
-			<td>
-				<div>
-					Hello {{ user }} | <a href="{% url accounts:logout %}?next={{ request.path_info|urlencode }}">Logout</a>
-				</div>
-			</td>
-		</tr>
-		<tr>
-			<td >
-				<div class="panel">
-					W - UP<br />
-					S - DOWN<br />
-					A - LEFT<br />
-					D - RIGHT(does not work in FF) or click<br />
-					Q - BOMB<br />
-					Move time is 1 sec,<br />
-					so you can move only once per second.<br />
-					Bombs in development.
-				</div>
-			</td>
+            <td>
+                <div class="panel">
+                    W - UP<br />
+                    S - DOWN<br />
+                    A - LEFT<br />
+                    D - RIGHT(does not work in FF) or click<br />
+                    Q - BOMB<br />
+                    Move time is 1 sec,<br />
+                    so you can move only once per second.<br />
+                    Bombs in development.
+                </div>
+            </td>			
 		</tr>
 	</table>
     {{ block.super }}
