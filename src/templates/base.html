@@ -18,6 +18,7 @@
       {% endblock %}
     </head>
     <body>
+      <div class="wrap">
         {% if user.is_authenticated %}
         <div>
             Hello {{ user }} | 
@@ -28,6 +29,7 @@
             <a href="{% url accounts:logout %}?next={{ request.path_info|urlencode }}">Logout</a>
         </div>
         {% endif %}
-       {% block body %}{% endblock %} 
+       {% block body %}{% endblock %}
+      </div> 
     </body>
 </html>
