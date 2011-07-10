@@ -49,6 +49,11 @@ class Player(models.Model):
             return False
         
         self.cell.put_bomb()
+        msg = {
+            'event': 'bomb_put',
+            'cell': self.cell.record()
+        }
+        self.game.send_players(msg, self);        
         return True        
     
     def can_move(self):

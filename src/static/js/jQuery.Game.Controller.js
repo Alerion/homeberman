@@ -25,8 +25,11 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
             var cell = this.map.getCell(msg.cell.id);
             player.setCell(cell);
             break;
+            case 'bomb_put':
+            var cell = this.map.getCell(msg.cell.id);
+            this.map.addBomb(cell);
+            break;
         }
-        console.log(msg)
     },
     initPlayers: function(data){
         this.player = new jQuery.Game.Player({
