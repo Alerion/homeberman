@@ -3,12 +3,12 @@
 макс. AFK: {{ game.unmove_max_time }}<br/>
 
 <table>
-    <thead>
-        <td>имя</td>
-        <td>кол. смертей</td>
+    <thead align="center" style="font: bold 110% serif; background: #aabbbb;">
+        <td>Имя</td>
+        <td>Количество смертей</td>
     </thead>
     {% for player in game.players.all %}
-    <tr>
+    <tr align="center">
         <td>{{ player }}</td>
         <td>{{ player.death_count }}</td>
     </tr>
