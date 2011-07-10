@@ -3,17 +3,35 @@
 {% block head %}{% endblock %}
 
 {% block body %}
+    {% if not user.in_game %}
     <a href="{% url main:add_game %}" title="Add game">Create new game</a>
-
+    {% endif %}
+    <table>
+        {% for game in games %}
+            <tr>
+                <td>{{ game }}</td>
+                <td>
+                    {% if not user.in_game %}
+                    <a href="{% url main:join_game game.id %}">Join</a>
+                    {% else %}
+                    Join
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}        
+    </table>
+    
     <ul class='games new'>
         {% for game in games %}
-            <li><a href="{% url main:join_game game.id %}">#{{ game.id }} {{ game.name }}</a></li>
+            <li><a href="{% url main:join_game game.id %}">{{ game }}</a></li>
         {% endfor %}
     </ul>
     <hr />
-    <ul class='games playing'>
+    <div>
+        Playing now: 
         {% for game in playing %}
-            <li>#{{ game.id }} {{ game.name }}</li>
-        {% endfor %}
-    </ul>
+            {{ game }}
+        {% endfor %}        
+    </div>
+
 {% endblock %}

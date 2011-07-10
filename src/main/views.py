@@ -48,12 +48,10 @@ def add_game(request):
     print request.POST
     form = GameForm(request.POST or None)
 
-    print form.errors
-    print form.is_valid()
     if form.is_valid():
         game = form.save()
-        player = Player(user=user, game=game)
-        player.save()
+        game.generate_map()
+        game.add_user(request.user)
         return redirect('main:index')
 
     return dict(form=form)
@@ -70,16 +68,24 @@ def join_game(request, id):
     
     if old_game:
         redirect('main:index')
+    
+    if user.in_game():
+        return redirect('main:list_games')
         
     game = get_object_or_404(Game.are_waiting, id=id)
     
     if game.players.all().count() >= game.max_players:
         redirect('main:list_games')
+        
+    game.add_user(user)
 
-    player = Player(user=user, game=game)
-    player.save()
-    return redirect('main:index')
-
+    if game.players.all().count() >= game.max_players:
+        game.start()
+        return redirect('main:index')
+    
+    return redirect('main:list_games')
+    
+    
 
 def generate(game, user):
     width = 30

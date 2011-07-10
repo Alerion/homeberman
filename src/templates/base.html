@@ -10,6 +10,9 @@
         <div>
             Hello {{ user }} | 
             <a href="{% url main:games_history %}">Games history</a> |
+            {% if not user.get_current_game %}
+                <a href="{% url main:list_games %}">Games list</a> |
+            {% endif %}
             <a href="{% url accounts:logout %}?next={{ request.path_info|urlencode }}">Logout</a>
         </div>        
        {% block body %}{% endblock %} 

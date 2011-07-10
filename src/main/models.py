@@ -68,7 +68,7 @@ class Player(models.Model):
         return self.game.cells.get(x=x, y=y)
         
     def respown(self):
-        self.cell = self._get_respown_cell()
+        self.cell = self.game.get_respown_cell()
         self.death_time = 0
         self.is_dead = False
         self.save()
@@ -153,7 +153,7 @@ class Player(models.Model):
 class Game(models.Model):
     name = models.CharField(max_length=140, null=True, blank=True)
     status = models.IntegerField(default=0, choices=GAME_STATUS_CHOICES)
-    max_players = models.PositiveIntegerField(default=10)
+    max_players = models.PositiveIntegerField(default=4)
     size = models.CharField(default='small', choices=GAME_SIZE_CHOICES, max_length=10)
     winner = models.ForeignKey(Player, related_name='winned_games', null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -167,6 +167,49 @@ class Game(models.Model):
     
     def __unicode__(self):
         return self.name or 'Game #%s' % self.pk 
+    
+    def start(self):
+        self.status = GS_PLAYING
+        self.started = datetime.now()
+        self.save()
+
+    def get_respown_cell(self):
+        w, h = self.get_size()
+        
+        side = random.randrange(3)
+        if side == 0:
+            x = 0
+            y = random.randrange(h)
+        elif side == 1:
+            x = w-1
+            y = random.randrange(h)
+        elif side == 2:
+            x = random.randrange(w)
+            y = 0
+        else:
+            x = random.randrange(w)
+            y = h-1
+        
+        return self.cells.get(x=x, y=y)
+    
+    def generate_map(self):
+        width, height = self.get_size()
+        
+        for x in range(width):
+            for y in range(height):
+                cell = Cell(game=self)
+                if random.random() < 0.2 and x not in (0, width-1) and y not in (0, height-1):
+                    cell.type = CT_WALL
+                else:
+                    cell.type = CT_EMPTY
+    
+                cell.x = x
+                cell.y = y
+                cell.save()
+    
+    def add_user(self, user):
+        player = Player(game=self, user=user, cell=self.get_respown_cell())
+        player.save()
     
     def is_plaing(self):
         return self.status == GS_PLAYING

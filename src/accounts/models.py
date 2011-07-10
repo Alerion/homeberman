@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 class User(BaseUser):
     
     objects = UserManager()
-	
+    
     def get_stomp_key(self):
         return self.pk
     
@@ -14,6 +14,12 @@ class User(BaseUser):
         
         if game:
             return game.players.get(user=self)
+    
+    def in_game(self):
+        from main.models import Game, GS_PLAYING, GS_WAITING
+        Q = models.Q
+        return Game.objects.filter(players__user=self) \
+            .filter(Q(status=GS_PLAYING)|Q(status=GS_WAITING)).exists()
     
     def get_current_game(self):
         from main.models import Game, GS_PLAYING
