@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand
-from main.models import Cell, Player, EXPLOSION_TIME, RESPOWN_TIME, GS_PLAYING
+from main.models import Game, Cell, Player, EXPLOSION_TIME, RESPOWN_TIME, GS_PLAYING, GAME_START_WAITING
 import time
 from django.db.models import F
+from datetime import timedelta, datetime
 
 class Command(BaseCommand):
     
@@ -35,5 +36,12 @@ class Command(BaseCommand):
             
             for player in qs:
                 player.kill()
+            
+            #start games
+            created_date = datetime.now() - timedelta(seconds=GAME_START_WAITING)
+            qs = Game.are_waiting.filter(created__lte=created_date)
+            
+            for game in qs:
+                game.start()
             
             time.sleep(0.5)

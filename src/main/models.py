@@ -13,6 +13,7 @@ from django.conf import settings
 MOVE_TIME = settings.MOVE_TIME
 EXPLOSION_TIME = 4
 RESPOWN_TIME = 10
+GAME_START_WAITING = 60 #seconds
 
 GS_WAITING = 0
 GS_PLAYING = 1
@@ -123,7 +124,7 @@ class Player(models.Model):
     def move_to(self, x, y):
         if not self.can_move():
             return False
-        
+
         if self.cell.x == x and self.cell.y == y:
             return False
         
