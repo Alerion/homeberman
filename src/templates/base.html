@@ -28,6 +28,7 @@
             {% endif %}
             <a href="{% url accounts:logout %}?next={{ request.path_info|urlencode }}">Выйти</a>
         </div>
+		<hr />
         {% endif %}
        {% block body %}{% endblock %}
        <div style="font-size: 0.8em">

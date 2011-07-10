@@ -6,12 +6,12 @@
     <div>
         {% if games %}
         <table>
-            <thead>
-                <td>название</td>
-                <td>время окончания</td>
+            <thead align="center" style="font: bold 110% serif; background: #aabbbb;">
+                <td>Название</td>
+                <td>Время окончания</td>
             </thead>
             {% for game in games %}
-                <tr>
+                <tr align="center" >
                     <td><a href="{% url main:finished game.pk %}">{{ game }}</a></td>
                     <td>{{ game.finished }}</td>
                 </tr>
