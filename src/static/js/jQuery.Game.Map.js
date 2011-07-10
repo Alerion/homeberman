@@ -80,17 +80,21 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
     },
     drawEmpty: function(){
         this.node.html('');
+        this.node.attr('class', 'cell empty');
     },
     drawWall: function(){
         this.node.html('☰');
+        this.node.attr('class', 'cell wall');
     },
     drawBomb: function(){
         this.node.html('☢');
+        this.node.attr('class', 'cell bomb');
     },    
     drawPlayer: function(){
         for (key in this.players){
             if (this.players[key].isPlayer && ! this.players[key].isDead){
                 this.node.html('♞');
+                this.node.attr('class', 'cell player');
                 return
             }
         }
@@ -98,13 +102,16 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         for (key in this.players){
             if ( ! this.players[key].isDead){
                 this.node.html('♿');
+                this.node.attr('class', 'cell enemy');
                 return
             }
         }
         this.node.html('☦');
+        this.node.attr('class', 'cell grave');
     },
     drawExplosion: function(){
         this.node.html('☠');
+        this.node.attr('class', 'cell explosion');
         this.dellayedDraw.delay(1000);
     }
 });
