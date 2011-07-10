@@ -29,13 +29,17 @@
                     {% if not user.in_game %}
                     <a href="{% url main:join_game game.id %}">join</a>
                     {% else %}
-                    -
+                    ------
                     {% endif %}
                 </td>
             </tr>
         {% endfor %}        
     </table>
-    
+    <a href="">Обновить</a>
+    <div>
+        Если после начала игры никто не двигается, обновите страницу. Не понятные проблемы
+        с "сокетами" :(
+    </div>
     <hr />
     <div>
         Текущие игры: 
