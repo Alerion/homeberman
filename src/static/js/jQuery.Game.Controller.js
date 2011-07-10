@@ -8,16 +8,43 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
     bombs: {},
     stomp: null, //jQuery.StompListener
     finish_url: '',
+    up_button: null,
+    down_button: null,
+    left_button: null,
+    right_button: null,
+    bomb_button: null,
     constructor : function(config){
         jQuery.extend(this, config);
         jQuery.Game.Controller.superclass.constructor.call(this, config);
         this.init();
     },
     init: function(){
+        var that = this;
+        
         GameApi.load_players(this.initPlayers, this);
         this.map.on('cellclick', this.onCellClick, this);
-        var that = this;
         jQuery(document).keypress(function(event){return that.onKeyPress(event)});
+        
+        this.up_button.click(function(){
+            that.move(0, -1);
+        });
+
+        this.down_button.click(function(){
+            that.move(0, 1);
+        });
+
+        this.left_button.click(function(){
+            that.move(-1, 0);
+        });
+
+        this.right_button.click(function(){
+            that.move(1, 0);
+        });
+
+        this.bomb_button.click(function(){
+            that.createBomb();
+        });
+        
         this.stomp.on('user', this.onServerEvent, this);
         this.updatePanel();
     },
@@ -105,21 +132,25 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
             break;
             
             case 119:
+            //UP
             this.move(0, -1);
             handled = true;
             break;
             
             case 115:
+            //DOWN
             this.move(0, 1);
             handled = true;
             break;
             
             case 97:
+            //LEFT
             this.move(-1, 0);
             handled = true;
             break;
             
             case 100:
+            //RIGHT
             this.move(1, 0);
             handled = true;
             break;

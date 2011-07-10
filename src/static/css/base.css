@@ -89,7 +89,7 @@ px      68    160    252    344    436    528    620    712    804    896    */
 
 body {
 	width: 896px;
-	padding: 72px 48px 84px;
+	padding: 5px 20px 84px;
 	background: rgb(232,232,232);
 	color: rgb(60,60,60);
 	-webkit-text-size-adjust: 100%; /* Stops Mobile Safari from auto-adjusting font-sizes */
