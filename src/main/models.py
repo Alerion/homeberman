@@ -9,7 +9,7 @@ from datetime import datetime
 import time
 import random
 
-MOVE_TIME = 1
+MOVE_TIME = 0.5
 EXPLOSION_TIME = 4
 RESPOWN_TIME = 10
 
@@ -37,8 +37,8 @@ class Player(models.Model):
     cell = models.ForeignKey('Cell', related_name='players')
     game = models.ForeignKey('Game', related_name='players')
     is_dead = models.BooleanField(default=False)
-    last_move_time = models.BigIntegerField(default=0)
-    death_time = models.BigIntegerField(default=0)
+    last_move_time = models.FloatField(default=0)
+    death_time = models.FloatField(default=0)
     death_count = models.IntegerField(default=0)
     
     class Meta:
@@ -262,7 +262,7 @@ class Cell(models.Model):
     x = models.IntegerField()
     y = models.IntegerField()
     type = models.IntegerField(default=CT_EMPTY, choices=CELL_TYPE_CHOICES)
-    bomb_time = models.IntegerField(null=True, blank=True)
+    bomb_time = models.FloatField(null=True, blank=True)
     
     class Meta:
         unique_together = (('game', 'x', 'y'),)

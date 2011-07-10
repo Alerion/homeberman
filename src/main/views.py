@@ -1,7 +1,7 @@
 from utils.decorators import render_to
 from django.conf import settings
 from django.shortcuts import get_object_or_404, redirect
-from main.models import Game, Cell, Player, CT_EMPTY, CT_WALL, GS_FINISHED
+from main.models import MOVE_TIME
 from accounts.models import User
 import random
 
@@ -19,6 +19,7 @@ def index(request):
     
     return {
         'game': game,
+        'MOVE_TIME': MOVE_TIME,
         'ORBITED_STOMP_SOCKET': settings.ORBITED_STOMP_SOCKET,
         'ORBITED_HTTP_SOCKET': settings.ORBITED_HTTP_SOCKET
     }
