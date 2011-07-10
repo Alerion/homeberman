@@ -175,7 +175,10 @@ class Game(models.Model):
         self.status = GS_PLAYING
         self.started = datetime.now()
         self.save()
-
+        
+        for player in self.players.all():
+            player.update_move_time()
+        
     def get_respown_cell(self):
         w, h = self.get_size()
         
