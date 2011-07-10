@@ -4,8 +4,8 @@
 
 {% block body %}
 
-<h1>Login</h1>
-
+<h2>Register</h2>
+<h1>HomberMan</h1>
 {% if user.is_authenticated %}
   <p>You are logged now. {{ user.username }}</p>
   <p><a href="{% url accounts:logout %}?next={{ request.path }}">Logout</a></p>
