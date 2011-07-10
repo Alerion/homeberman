@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from accounts.models import User
 from utils.stomp_utils import send_user
+from model_utils.managers import QueryManager
 import time
 
 MOVE_TIME = 1
@@ -29,9 +30,9 @@ GAME_SIZE_CHOICES = (
 )
 
 class Player(models.Model):
-    user = models.ForeignKey(User)
-    cell = models.ForeignKey('Cell')
-    game = models.ForeignKey('Game')
+    user = models.ForeignKey(User, related_name='players')
+    cell = models.ForeignKey('Cell', related_name='players')
+    game = models.ForeignKey('Game', related_name='players')
     is_dead = models.BooleanField(default=False)
     last_move_time = models.BigIntegerField(default=0)
     
@@ -115,6 +116,10 @@ class Game(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     started = models.DateTimeField(null=True, blank=True)
     
+    are_waiting = QueryManager(status=GS_WAITING)
+    are_playing = QueryManager(status=GS_PLAYING)
+    objects = models.Manager()
+
     def send_players(self, msg, exclude=None):
         qs = self.player_set.select_related('user')
         

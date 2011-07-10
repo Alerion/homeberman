@@ -6,5 +6,15 @@
     <div>
         Hello {{ user }} | <a href="{% url accounts:logout %}?next={{ request.path_info|urlencode }}">Logout</a>
     </div>
-    Games list
+    <ul class='games new'>
+        {% for game in games %}
+            <li><a href="{% url main:join_game game.id %}">#{{ game.id }} {{ game.name }}</a></li>
+        {% endfor %}
+    </ul>
+    <hr />
+    <ul class='games playing'>
+        {% for game in playing %}
+            <li>#{{ game.id }} {{ game.name }}</li>
+        {% endfor %}
+    </ul>
 {% endblock %}
