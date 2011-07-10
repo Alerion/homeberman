@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from accounts.models import User
 from utils.stomp_utils import send_user
+from model_utils.managers import QueryManager
 import time
 
 MOVE_TIME = 1
@@ -85,6 +86,8 @@ class Game(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     started = models.DateTimeField(null=True, blank=True)
     
+    waiting = QueryManager(status=GS_WAITING)
+
     def send_players(self, msg, exclude=None):
         qs = self.player_set.select_related('user')
         
