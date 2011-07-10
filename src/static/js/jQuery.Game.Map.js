@@ -106,7 +106,7 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
                 return
             }
         }
-        this.node.html('☦');
+        //this.node.html('☦');
         this.node.attr('class', 'cell grave');
     },
     drawExplosion: function(){
