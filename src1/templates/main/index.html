@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block extrahead %}
+    <script>
+        jQuery(function($){
+            var stompListener = new jQuery.StompListener({
+                socket: ORBITED_STOMP_SOCKET,
+                user_id: STOMP_KEY
+            });
+                        
+            var Map = new jQuery.Game.Map({
+                node: $('.map')
+            });
+            
+            var Controller = new jQuery.Game.Controller({
+                panelNode: jQuery('.panel'),
+                finish_url: FINISH_URL,
+                map: Map,
+                stomp: stompListener,
+                up_button: $('.button-up'),
+                down_button: $('.button-down'),
+                left_button: $('.button-left'),
+                right_button: $('.button-right'),
+                bomb_button: $('.button-bomb'),
+            });
+        });
+    </script>
+{% end %}

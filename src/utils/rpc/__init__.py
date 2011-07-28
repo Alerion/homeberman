@@ -64,6 +64,43 @@ class RpcHttpResponse(RpcResponse):
             self.cookies[key]['domain'] = domain
         if secure:
             self.cookies[key]['secure'] = True
+            
+class RpcRouterJSONEncoder(simplejson.JSONEncoder):
+    """
+    JSON Encoder for RpcRouter
+    """
+    
+    def __init__(self, url_args, url_kwargs, *args, **kwargs):
+        self.router_classes = (RpcRouter,)
+        self.url_args = url_args
+        self.url_kwargs = url_kwargs
+        super(RpcRouterJSONEncoder, self).__init__(*args, **kwargs)
+    
+    def _encode_action(self, o):
+        output = []
+        for method in dir(o):
+            if not method.startswith('_'):
+                #f = getattr(o, method)
+                data = dict(name=method)
+                output.append(data) 
+        return output        
+    
+    def _get_url(self, obj):
+        return reverse(obj.url, args=self.url_args, kwargs=self.url_kwargs)
+    
+    def default(self, o):
+        if isinstance(o, self.router_classes):
+            output = {
+                'url': self._get_url(o),
+                'enableBuffer': o.enable_buffer,
+                'actions': {},
+                'maxRetries': o.max_retries
+            }
+            for name, action in o.actions.items():
+                output['actions'][name] = self._encode_action(action)
+            return output
+        else:
+            return super(RpcRouterJSONEncoder, self).default(o)
 
 #for jQuery.Rpc
 class RpcRouter(object):
@@ -125,7 +162,7 @@ class RpcRouter(object):
         
         response.content = simplejson.dumps(output)
             
-        return response 
+        return response
     
     def action_extra_kwargs(self, action, request, *args, **kwargs):
         """
@@ -152,15 +189,18 @@ class RpcRouter(object):
         return {
             'user': request.user
         }
+    
+    def js_initialization(self, args, kwargs, encoder=RpcRouterJSONEncoder):
+        obj = simplejson.dumps(self, cls=encoder, url_args=args, url_kwargs=kwargs)
+        return 'jQuery.Rpc.addProvider(%s)' % obj
         
-    def api(self, request, *args, **kwargs):
+    def api(self, request, encoder=RpcRouterJSONEncoder, *args, **kwargs):
         """
         This method is view that send js for provider initialization.
         Just set this in template after ExtJs including:
         <script src="{% url api_url_name %}"></script>  
         """        
-        obj = simplejson.dumps(self, cls=RpcRouterJSONEncoder, url_args=args, url_kwargs=kwargs)
-        return HttpResponse('jQuery.Rpc.addProvider(%s)' % obj)
+        return HttpResponse(self.js_provider_initialization(args, kwargs, encoder))
 
     def call_action(self, rd, request, *args, **kwargs):
         """
@@ -234,39 +274,6 @@ class RpcRouter(object):
                 'method': method,
                 'message': unicode(e)
             }  
-
-class RpcRouterJSONEncoder(simplejson.JSONEncoder):
-    """
-    JSON Encoder for RpcRouter
-    """
-    
-    def __init__(self, url_args, url_kwargs, *args, **kwargs):
-        self.url_args = url_args
-        self.url_kwargs = url_kwargs
-        super(RpcRouterJSONEncoder, self).__init__(*args, **kwargs)
-    
-    def _encode_action(self, o):
-        output = []
-        for method in dir(o):
-            if not method.startswith('_'):
-                #f = getattr(o, method)
-                data = dict(name=method)
-                output.append(data) 
-        return output        
-    
-    def default(self, o):
-        if isinstance(o, RpcRouter):
-            output = {
-                'url': reverse(o.url, args=self.url_args, kwargs=self.url_kwargs),
-                'enableBuffer': o.enable_buffer,
-                'actions': {},
-                'maxRetries': o.max_retries
-            }
-            for name, action in o.actions.items():
-                output['actions'][name] = self._encode_action(action)
-            return output
-        else:
-            return super(RpcRouterJSONEncoder, self).default(o)
 
 def add_request_to_kwargs(func):
     def extra_kwargs_func(request, *args, **kwargs):

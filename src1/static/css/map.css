@@ -1,0 +1,50 @@
+.map {
+    position: relative;
+    border: 4px dashed black;
+    padding: 2px;
+    background-color: #eee8d5;
+}
+
+.map .cell {
+    position: absolute;
+    cursor: pointer;
+}
+
+
+.map .wall {
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V+0/AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABhQTFRFvG1Hu1ornEsjyHRIz4NaiDsXql05wHpaRj+V+QAAAItJREFUeNpskFsOwCAIBFeR5f43Lg+pNunghyYyrMICHPIoAcdAroHlAATJ2dBEgNprMzlJ7Bp+3WCoEa7byGpw6QRdeuka2LIlfmnDbO+cG89pCzH2eCfz/k/OCZ5nX5FeXcywLG/XaPe6evSrK2c47OSsr4ujjI/YB8UHhbdW5wyLD9IMm29/BBgABusE2NwikLEAAAAASUVORK5CYII=);
+   -moz-box-shadow: 2px 2px 0px #100, 1px 1px 0px #100; 
+  -webkit-box-shadow: 2px 2px 0px #100, 1px 1px 0px #100;
+          box-shadow: 2px 2px 0px #100, 1px 1px 0px #100;
+	
+}
+
+.map .player,
+.map .explosion,
+.map .grave,
+.map .enemy,
+.map .bomb {
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+}
+
+.map .bomb {
+	background-image: url(data:image/gif;base64,R0lGODlhFgATAPYAAAAAAAwMDHFVKAgICEBAQBgYGO7y8jAwMExMTCAgIBAQEP/mwv8AAIWFhWFhYTg4OG1tbaGZfSwsLHlpQCQkJNbSyoGBgY2NjURERCQcEJWVldLOxmFMGFVVVWVQHKGVeebm4pGFYTQ0NFBQUHlpPLKysp2dncLCwl1dXXV1dTw8PN7e2igoKH19faqqqomJiVlZWXFxcaGhoRQUFJGRkWVlZdbWzmlVIHl5edLS0nllPK6urqWlpV1IFGlMCMbGxgQEBEAwEHFdMNra0qWZgba2tkxAJN7e3khISObm5tra2v+ZMHVlOL6+vmlpadbW1srKynVhNKWdhbq6uu7u7v+FAP/OMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh/iREZXNpZ24gYnkgQWl3YW4gKHd3dy5rb2xvYm9rLndyZy5ydSkAIfkEBQoAVQAsAAAAABYAEwAAB+aAVYKDhIWGh4iJghUCjYqIAoITAgAjE1ITHBNEFQaHkVUZAAQEDg41DhgHARGfghwEKhcNFrQoSBIKQ4agVQSzDTI8JikoBAk3K4VLDIIPKBYmSkk5GikjBwAAG4QMC4KlFjJHVE/WHSLaH4gPMDgaUDknFxAI2QAkiAcIEA07JS5apKKgzQMiBSwIdIAQo96DBAO0GUEEQAGFBwhG2EsQAMCAAesOdQxQQMIBCQU+KihQgNuhENoABJg5YGUCCSE8IbIRJWYACgdUYLDxqAqICDILiCCAoFXRKgYi6OihI0Knp08DAQAh+QQFCgAAACwCAAcABAADAAAHDoALVlULBlUMBgALAACBADs=);
+}
+
+
+.map .player {
+	background-image: url(../img/bomberman.png);
+}
+
+.map .enemy {
+	background-image: url(../img/devil.png)
+}
+
+.map .grave {
+	background-image: url(../img/dead.png)
+}
+
+.map .explosion {
+	background-image: url(../img/fire.png)
+}

@@ -1,0 +1,38 @@
+<meta http-equiv="X-UA-Compatible" content="IE=9;chrome=1"/>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en">
+    <head>
+        <title>Homberman</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+        <link rel="shortcut icon" href="{{ static('favicon.ico') }}" type="image/x-icon" />
+        <link rel="icon" href="{{ static('favicon.ico') }}" type="image/x-icon" />
+    
+        <link href="{{ static('css/base.css') }}" media="all" rel="stylesheet" />
+        <link href="{{ static('css/map.css') }}" media="all" type="text/css" rel="stylesheet" />
+        <link href="{{ static('js/jgrowl/jquery.jgrowl.css') }}" media="all" type="text/css" rel="stylesheet" />
+        <link href='http://fonts.googleapis.com/css?family=Love+Ya+Like+A+Sister&v2' rel='stylesheet' type='text/css'>
+        {% block head %}{% end %}
+    </head>
+    <body>
+        <div class="wrap">
+            {% if user %}
+            <div class='nav'>
+                Привет {{ user }}  
+                {% if not user.get_current_game %}
+                    <a class='button list' href="{{ url('list_games') }}">Список игр</a> 
+                {% end %}
+                <a class='button hist' href="{ main:games_history }">История игр</a> 
+                <a class='button quit' href="#">Выйти</a>
+            </div>
+            <hr />
+            {% end %}            
+            {% block body %}{% end %}
+            <hr />
+            <div style="font-size: 0.8em">
+                <a href="https://github.com/Alerion/homeberman" target="blank">Репозиторий</a>
+            </div>
+        </div>
+    </body>
+</html>

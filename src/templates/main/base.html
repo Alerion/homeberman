@@ -12,7 +12,8 @@
     <script src="{{ MEDIA_URL }}js/jQuery.Game.Map.js"></script>
     <script src="{{ MEDIA_URL }}js/jQuery.Game.Player.js"></script>
     <script src="{{ MEDIA_URL }}js/jQuery.Game.Controller.js"></script>
-    <script src="{% url main:api %}"></script>    
+    {#<script src="{% url main:api %}"></script>#}
+    <script src="http://127.0.0.1:8000/rpc/"></script>    
     <script>
         //Show error message for RPC exceptions
         jQuery.Rpc.on('exception', function(event){
