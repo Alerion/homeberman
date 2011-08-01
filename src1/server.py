@@ -1,14 +1,7 @@
 #!/usr/bin/env python
 
-import tornado.web
-import tornado.httpserver
-import tornado.ioloop
-import tornado.auth
-from tornado.options import define, options
-import simplejson as json
 import os
 import sys
-
 #add base project to Python PATH and Django settings
 PROJECT_ROOT = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
 def rel(*x):
@@ -16,19 +9,29 @@ def rel(*x):
 sys.path.insert(0, rel('src'))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
-define("port", default=8000, help="run on the given port", type=int)
+import tornado.web
+import tornado.httpserver
+import tornado.ioloop
+import tornado.auth
+from tornado.options import define, options
+import tornadio
+import tornadio.router
+import tornadio.server
 
 from main.models import Game
 from main.forms import GameForm
 
 from rpc import rpc_router
 from base import BaseHandler, GoogleHandler
+import traceback
+from conn_manager import connection_manager
 
 class Application(tornado.web.Application):
-
+    
     def __init__(self, **kwargs):
         from django.conf import settings
-        
+
+        self.connection_manager = connection_manager
         
         handlers = [
             tornado.web.url(r"/", MainHandler, name='main'),
@@ -37,6 +40,7 @@ class Application(tornado.web.Application):
             tornado.web.url(r"/add/", AddGameHandler, name='add_game'),
             tornado.web.url(r"/finish/", FinishHandler, name='finish'),
             rpc_router.url_pattern(),
+            PingRouter.route()
         ]    
         settings = dict(
             login_url = '/login/',
@@ -46,10 +50,32 @@ class Application(tornado.web.Application):
             session_engine = settings.SESSION_ENGINE,
             template_path = 'templates',
             static_path=os.path.join(os.path.dirname(__file__), "static"),
-            autoescape='save_escape'
+            autoescape='save_escape',
+            socket_io_port = 8000,
+            flash_policy_port = 843,
+            flash_policy_file = os.path.join(os.path.dirname(__file__), "static", 'flashpolicy.xml')            
         )
         kwargs.update(settings)
         tornado.web.Application.__init__(self, handlers, **kwargs)
+
+class PingConnection(tornadio.SocketConnection):
+    
+    def on_open(self, handler, *args, **kwargs):
+        self.key = handler.user.get_current_game().stomp_key()
+        handler.application.connection_manager.add(self.key, self)
+
+    def on_message(self, message):
+        from datetime import datetime
+        message['server'] = str(datetime.now())
+        message['ip'] = self.ip
+        self.send(message)
+
+    def on_close(self, handler):
+        handler.application.connection_manager.remove(self.key, self)
+
+PingRouter = tornadio.get_router(PingConnection, dict(
+    enabled_protocols=['websocket', 'flashsocket']
+))
 
 class FinishHandler(BaseHandler):
     
@@ -107,9 +133,10 @@ class GameListHandler(BaseHandler):
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
+        print self.application
         from django.conf import settings
         from main.models import MOVE_TIME
-        
+
         game = self.user.get_current_game()
         if not game:
             return self.redirect(self.reverse_url('list_games'))
@@ -121,14 +148,9 @@ class MainHandler(BaseHandler):
             'ORBITED_HTTP_SOCKET': settings.ORBITED_HTTP_SOCKET
         }        
         self.render('main/index.html', **context)
-        
+
 def main():
-    tornado.options.parse_command_line()
-    app = Application(debug=True)
-    http_server = tornado.httpserver.HTTPServer(app)
-    http_server.bind(options.port)
-    http_server.start(num_processes=1)
-    tornado.ioloop.IOLoop.instance().start()
+    tornadio.server.SocketServer(Application(debug=True))
 
 if __name__ == "__main__":
     main()

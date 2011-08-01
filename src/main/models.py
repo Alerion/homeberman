@@ -3,12 +3,12 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.db import models
 from accounts.models import User
-from utils.stomp_utils import send_user
 from model_utils.managers import QueryManager
 from datetime import datetime
 import time
 import random
 from django.conf import settings
+from conn_manager import send_game_event
 
 MOVE_TIME = settings.MOVE_TIME
 EXPLOSION_TIME = 2
@@ -242,7 +242,7 @@ class Game(models.Model):
         self.send_players(msg)
     
     def send_players(self, msg):
-        send_user(msg, self)
+        send_game_event(msg, self)
     
     def get_cell(self, x, y):
         try:

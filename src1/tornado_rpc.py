@@ -17,6 +17,7 @@ class RpcRequestHandler(BaseHandler):
         self.write(self.rpc.js_initialization(args, kwargs))
     
     def post(self):
+        self.application
         self.rpc(self)
         self.finish()
     

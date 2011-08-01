@@ -44,3 +44,22 @@ jQuery.StompListener = jQuery.inherit(jQuery.util.Observable, {
         this.fireEvent(path, data);
     }
 });
+
+jQuery.SocketListener = jQuery.inherit(jQuery.util.Observable, {
+    constructor: function(config){
+        jQuery.StompListener.superclass.constructor.apply(this, arguments);
+        
+        sosketConfig = config.socketConfig || {};
+        this.socket = new io.Socket(window.location.hostname, sosketConfig);
+        this.addEvents('user');
+        this.socket.connect();
+        
+        var that = this;
+        this.socket.addEvent('message', function() {
+            that.onMessage.apply(that, arguments);
+        });
+    },
+    onMessage: function(data){
+        this.fireEvent('user', data);
+    }
+});

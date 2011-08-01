@@ -1,6 +1,8 @@
 ﻿{% extends '../base.html' %}
 
 {% block head %}
+    <script src="http://cdn.socket.io/stable/socket.io.js"></script>
+    <script>WEB_SOCKET_SWF_LOCATION = 'http://cdn.socket.io/stable/WebSocketMain.swf';</script>
     <script src="{{ static('js/Orbited.js') }}"></script>
     <script src="{{ static('js/stomp.js') }}"></script>
     <script src="{{ static('js/jquery-1.6.2.min.js') }}"></script>

@@ -1,4 +1,5 @@
 import tornado.web
+import tornado.websocket
 from django.utils.importlib import import_module
 from accounts.models import User
 from tornado.escape import xhtml_escape
@@ -10,6 +11,30 @@ def save_escape(value):
         return value
     return xhtml_escape(value)
 
+class BaseWebSocketHandler(tornado.websocket.WebSocketHandler):
+    
+    user = tornado.web.RequestHandler.current_user
+
+    def get_current_user(self):
+        session_key = self.settings['auth_session_key']
+        user_id = self.session.get(session_key)
+        
+        if not user_id:
+            return
+        
+        try:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            pass
+    
+    def _execute(self, transforms, *args, **kwargs):
+        print 'PREPARE WEB SOCKET'
+        cookie_name = self.settings['session_cookie_name']
+        engine = import_module(self.settings['session_engine'])
+        session_key = self.get_secure_cookie(cookie_name)
+        self.session = engine.SessionStore(session_key)
+        super(BaseWebSocketHandler, self)._execute(transforms, *args, **kwargs)
+    
 class BaseHandler(tornado.web.RequestHandler):
     
     user = tornado.web.RequestHandler.current_user

@@ -3,9 +3,13 @@
 {% block extrahead %}
     <script>
         jQuery(function($){
-            var stompListener = new jQuery.StompListener({
-                socket: ORBITED_STOMP_SOCKET,
-                user_id: STOMP_KEY
+            
+            var socketListener = new jQuery.SocketListener({
+                socketConfig: {
+                    port: 8000,
+                    rememberTransport: false,
+                    transports: ['websocket', 'flashsocket']                    
+                }
             });
                         
             var Map = new jQuery.Game.Map({
@@ -16,7 +20,7 @@
                 panelNode: jQuery('.panel'),
                 finish_url: FINISH_URL,
                 map: Map,
-                stomp: stompListener,
+                stomp: socketListener,
                 up_button: $('.button-up'),
                 down_button: $('.button-down'),
                 left_button: $('.button-left'),
