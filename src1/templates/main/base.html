@@ -3,8 +3,7 @@
 {% block head %}
     <script src="http://cdn.socket.io/stable/socket.io.js"></script>
     <script>WEB_SOCKET_SWF_LOCATION = 'http://cdn.socket.io/stable/WebSocketMain.swf';</script>
-    <script src="{{ static('js/Orbited.js') }}"></script>
-    <script src="{{ static('js/stomp.js') }}"></script>
+    <script src="{{ static('js/ocanvas-1.0.js') }}"></script>
     <script src="{{ static('js/jquery-1.6.2.min.js') }}"></script>
     <script src="{{ static('js/jquery.rpc.js') }}"></script>
     <script src="{{ static('js/jgrowl/jquery.jgrowl.js') }}"></script>
@@ -21,15 +20,7 @@
         
         FINISH_URL = "{{ url('finish') }}";
         
-        //Init STOMP
-        STOMP_KEY = '{{ game.stomp_key() }}';
-        ORBITED_STOMP_SOCKET = {{ ORBITED_STOMP_SOCKET }};
-        ORBITED_HTTP_SOCKET = {{ ORBITED_HTTP_SOCKET }};
         MOVE_TIME = {{ MOVE_TIME }};
-        
-        document.domain=document.domain;
-        Orbited.settings.port = ORBITED_HTTP_SOCKET;
-        TCPSocket = Orbited.TCPSocket;
         
         function log(){
             console && console.log && console.log(arguments);

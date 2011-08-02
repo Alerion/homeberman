@@ -33,7 +33,7 @@ class Application(tornado.web.Application):
         from django.conf import settings
 
         self.connection_manager = connection_manager
-        
+
         handlers = [
             tornado.web.url(r"/", MainHandler, name='main'),
             tornado.web.url(r"/login/", GoogleHandler, name='login'),
@@ -41,7 +41,7 @@ class Application(tornado.web.Application):
             tornado.web.url(r"/add/", AddGameHandler, name='add_game'),
             tornado.web.url(r"/finish/", FinishHandler, name='finish'),
             rpc_router.url_pattern(),
-            PingRouter.route()
+            GameSocketRouter.route(),
         ]    
         settings = dict(
             login_url = '/login/',
@@ -59,22 +59,19 @@ class Application(tornado.web.Application):
         kwargs.update(settings)
         tornado.web.Application.__init__(self, handlers, **kwargs)
 
-class PingConnection(tornadio.SocketConnection):
+class GameSocketConnection(tornadio.SocketConnection):
     
     def on_open(self, handler, *args, **kwargs):
         self.key = handler.user.get_current_game().stomp_key()
         handler.application.connection_manager.add(self.key, self)
 
     def on_message(self, message):
-        from datetime import datetime
-        message['server'] = str(datetime.now())
-        message['ip'] = self.ip
-        self.send(message)
-
+        pass
+    
     def on_close(self, handler):
         handler.application.connection_manager.remove(self.key, self)
 
-PingRouter = tornadio.get_router(PingConnection, dict(
+GameSocketRouter = tornadio.get_router(GameSocketConnection, dict(
     enabled_protocols=['websocket', 'flashsocket']
 ))
 

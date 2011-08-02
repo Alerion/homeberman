@@ -5,6 +5,7 @@ import urllib
 from base import BaseHandler
 from utils.rpc import RpcMultiValueDict, RpcExceptionEvent
 from inspect import getargspec
+import tornadio
 
 #Does not support URL args for Router
 
@@ -20,7 +21,23 @@ class RpcRequestHandler(BaseHandler):
         self.application
         self.rpc(self)
         self.finish()
+
+############## scoket ####################
+class RpcSocketConnection(tornadio.SocketConnection):
     
+    def on_open(self, handler, *args, **kwargs):
+        pass
+
+    def on_message(self, message):
+        print message
+    
+    def on_close(self, handler):
+        pass
+
+BaseSocketRouterClass = tornadio.get_router(RpcSocketConnection, dict(
+    enabled_protocols=['websocket', 'flashsocket']
+), resource='rpc') 
+###############################################
 class TornadoRpcRouterJSONEncoder(rpc.RpcRouterJSONEncoder):
     
     def __init__(self, *args, **kwargs):

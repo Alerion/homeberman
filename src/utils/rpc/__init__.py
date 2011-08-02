@@ -94,6 +94,7 @@ class RpcRouterJSONEncoder(simplejson.JSONEncoder):
                 'url': self._get_url(o),
                 'enableBuffer': o.enable_buffer,
                 'actions': {},
+                'type': getattr(o, 'rpc_type', 'remoting'),
                 'maxRetries': o.max_retries
             }
             for name, action in o.actions.items():

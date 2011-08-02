@@ -449,6 +449,8 @@ jQuery.util.DelayedTask = function(fn, scope, args){
 (function($){
  
     $.Rpc = $.inherit(jQuery.util.Observable, {
+        PROVIDERS: {},
+        
         exceptions: {
             TRANSPORT: 'xhr',
             PARSE: 'parse',
@@ -475,7 +477,7 @@ jQuery.util.DelayedTask = function(fn, scope, args){
             }          
               
             if(!provider.events){
-                provider = new $.Rpc.RemotingProvider(provider);
+                provider = new $.Rpc.PROVIDERS[provider.type](provider);
             }
             provider.id = provider.id || $.guid++;
             this.providers[provider.id] = provider;
@@ -683,7 +685,7 @@ jQuery.util.DelayedTask = function(fn, scope, args){
                 }
             }
         },
-        
+
         isConnected: function(){
             return !!this.connected;
         },
@@ -880,6 +882,141 @@ jQuery.util.DelayedTask = function(fn, scope, args){
             }
         }
     });
-     
+    
+    $.Rpc.PROVIDERS['remoting'] = $.Rpc.RemotingProvider;
+
+    $.Rpc.SocketProvider = $.inherit($.Rpc.RemotingProvider, {       
+        port: 8000,
+        transports: ['websocket', 'flashsocket'],
+    
+        onData: function(xhr, status, opt){
+            console.log('onData')
+            if(status === 'success'){
+                var events = this.getEvents(xhr);
+                for(var i = 0, len = events.length; i < len; i++){
+                    var e = events[i],
+                        t = this.getTransaction(e);
+                    this.fireEvent('data', this, e);
+                    if(t){
+                        this.doCallback(t, e, true);
+                        $.Rpc.removeTransaction(t);
+                    }
+                }
+            }else{
+                var ts = [].concat(opt.ts);
+
+                for(var i = 0, len = ts.length; i < len; i++){
+                    var t = this.getTransaction(ts[i]);
+
+                    if(t && t.retryCount < this.maxRetries){
+                        t.retry();
+                    }else{
+                        var e = new $.Rpc.ExceptionEvent({
+                            data: ts[i].data,
+                            transaction: t,
+                            code: $.Rpc.exceptions.TRANSPORT,
+                            message: 'Cannot connect to server. Please check your web connection.',
+                            xhr: xhr
+                        });
+                        this.fireEvent('data', this, e);
+                        if(t){
+                            this.doCallback(t, e, false);
+                            $.Rpc.removeTransaction(t);
+                        }
+                    }
+                }
+            }
+        },
+    
+        getCallData: function(t){
+            console.log('getCallData')
+            return {
+                action: t.action,
+                method: t.method,
+                data: t.data,
+                tid: t.tid
+            };
+        },
+    
+        doSend : function(data){
+            console.log('doSend')
+            var o = {
+                url: this.url,
+                ts: data,
+                type: 'POST',
+                timeout: this.timeout,
+                dataType: 'json'
+            }, callData;
+    
+            if($.isArray(data)){
+                callData = [];
+                for(var i = 0, len = data.length; i < len; i++){
+                    callData.push(this.getCallData(data[i]));
+                }
+            }else{
+                callData = this.getCallData(data);
+            }
+
+            if(this.enableUrlEncode){
+                var params = {};
+                params[(typeof this.enableUrlEncode == 'string') ? this.enableUrlEncode : 'data'] = $.JSON.encode(callData);
+                o.data = $.param(params);
+            }else{
+                o.data = encodeURIComponent($.JSON.encode(callData));
+                o.processData = false;
+            }
+            
+            o.complete = this.onData.createDelegate(this, o, true);
+            $.ajax(o);
+        },
+    
+        doCall : function(c, m, args){
+            console.log('doCall')
+            var data = null, cb, scope, len = 0;
+
+            $.each(args, function(i, val){
+                if ($.isFunction(val)){
+                    return false;
+                }
+                len = i+1;
+            });
+
+            if(len !== 0){
+                data = args.slice(0, len);
+            }
+
+            if (args[len+1] && $.isFunction(args[len+1])){
+                //we have failure callback after success
+                scope = args[len+2];
+                cb = {
+                    success: scope && $.isFunction(args[len]) ? args[len].createDelegate(scope) : args[len],
+                    failure: scope ? args[len+1].createDelegate(scope) : args[len+1]
+                }
+                scope = args[len+2];
+            }else{
+                scope = args[len+1];
+                cb = args[len] || $.noop;
+                cb = scope && $.isFunction(cb) ? cb.createDelegate(scope) : cb;               
+            }
+
+            var t = new $.Rpc.Transaction({
+                provider: this,
+                args: args,
+                action: c,
+                method: m.name,
+                data: data,
+                cb: cb
+            });
+    
+            if(this.fireEvent('beforecall', this, t) !== false){
+                $.Rpc.addTransaction(t);
+                this.queueTransaction(t);
+                this.fireEvent('call', this, t);
+            }
+        }
+    });
+    
+    $.Rpc.PROVIDERS['socket'] = $.Rpc.SocketProvider;
+   
 })(jQuery);
 
