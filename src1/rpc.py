@@ -1,5 +1,5 @@
 from main.rpc import GameApiClass
-from tornado_rpc import RpcRouter
+from tornado_rpc import RpcRouter, SocketRpcRouterBase
 from main.models import EXPLOSION_TIME
 from django.template.loader import render_to_string
 import tornadio
@@ -49,6 +49,7 @@ class CustomRouter(RpcRouter):
     
     def __init__(self):
         super(CustomRouter, self).__init__('/rpc/')
+        self.rpc_type = 'socket'
         self.host = 'http://127.0.0.1:8000'        
         self.actions = {
             'GameApi': GameApiClass()
@@ -63,8 +64,3 @@ class CustomRouter(RpcRouter):
         return output
         
 rpc_router = CustomRouter()
-
-class SocketRouter(CustomRouter):
-    type = 'socket'
-
-socket_rpc_router = CustomRouter()

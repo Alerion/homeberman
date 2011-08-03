@@ -25,6 +25,9 @@
         function log(){
             console && console.log && console.log(arguments);
         }
+        
+        var IMG_BASE_PATH = "{{ static('img/') }}";
+
     </script>
     {% block extrahead %}{% end %}
 {% end %}
@@ -43,7 +46,7 @@
     <table border="1" width="100%">
         <tr>
             <td>
-                <div class="map"></div>
+                <canvas class="map"></canvas>
             </td>
             <td>
                 <div class="panel"></div>

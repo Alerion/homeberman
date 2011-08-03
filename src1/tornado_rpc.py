@@ -22,21 +22,22 @@ class RpcRequestHandler(BaseHandler):
         self.rpc(self)
         self.finish()
 
-############## scoket ####################
+############## socket ####################
 class RpcSocketConnection(tornadio.SocketConnection):
     
     def on_open(self, handler, *args, **kwargs):
         pass
 
-    def on_message(self, message):
-        print message
+    def on_message(self, handler, message):
+        handler.router.rpc(handler, requests=message, handle_response=self.send)
     
     def on_close(self, handler):
         pass
 
-BaseSocketRouterClass = tornadio.get_router(RpcSocketConnection, dict(
+SocketRpcRouterBase = tornadio.get_router(RpcSocketConnection, dict(
     enabled_protocols=['websocket', 'flashsocket']
-), resource='rpc') 
+), resource='rpc')
+
 ###############################################
 class TornadoRpcRouterJSONEncoder(rpc.RpcRouterJSONEncoder):
     
@@ -59,7 +60,12 @@ class RpcRouter(object):
         self.actions = actions
         self.enable_buffer = enable_buffer
         self.max_retries = max_retries
-
+    
+    def socket_router(self):
+        router = type('SocketRpcRouter', (SocketRpcRouterBase,), {'rpc': self})
+        router._route = (router._route[0], router)
+        return router
+    
     def url_pattern(self):
         #FIXME: url should be url name
         return tornado.web.url(self.url, RpcRequestHandler, {'rpc': self}, 'rpc')
@@ -70,10 +76,13 @@ class RpcRouter(object):
         """
         request = handler.request
         
-        try:
-            requests = simplejson.loads(urllib.unquote_plus(request.body))
-        except (ValueError, KeyError, IndexError):
-            requests = []
+        if 'requests' in kwargs:
+            requests = kwargs['requests']
+        else:
+            try:
+                requests = simplejson.loads(urllib.unquote_plus(request.body))
+            except (ValueError, KeyError, IndexError):
+                requests = []
             
         if not isinstance(requests, list):
                 requests = [requests]
@@ -92,7 +101,10 @@ class RpcRouter(object):
                 
             output.append(mr)
         
-        handler.write(simplejson.dumps(output))
+        if 'handle_response' in kwargs:
+            kwargs['handle_response'](output)
+        else:
+            handler.write(simplejson.dumps(output))
             
         return handler
 

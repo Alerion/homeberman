@@ -41,7 +41,8 @@ class Application(tornado.web.Application):
             tornado.web.url(r"/add/", AddGameHandler, name='add_game'),
             tornado.web.url(r"/finish/", FinishHandler, name='finish'),
             rpc_router.url_pattern(),
-            GameSocketRouter.route(),
+            rpc_router.socket_router().route(),
+            GameSocketRouter.route()
         ]    
         settings = dict(
             login_url = '/login/',
@@ -131,7 +132,6 @@ class GameListHandler(BaseHandler):
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        print self.application
         from django.conf import settings
         from main.models import MOVE_TIME
 
@@ -167,14 +167,15 @@ def bomb_monitor():
         player.respown()
     
     #check unmove time
-    qs = Player.objects.exclude(last_move_time=0) \
-        .filter(is_dead=False) \
-        .filter(last_move_time__lte=time.time()-F('game__unmove_max_time')) \
-        .filter(game__status=GS_PLAYING) \
-        .order_by('last_move_time').select_related('game')
-    
-    for player in qs:
-        player.kill()
+    if 0:
+        qs = Player.objects.exclude(last_move_time=0) \
+            .filter(is_dead=False) \
+            .filter(last_move_time__lte=time.time()-F('game__unmove_max_time')) \
+            .filter(game__status=GS_PLAYING) \
+            .order_by('last_move_time').select_related('game')
+        
+        for player in qs:
+            player.kill()
     
     #start games
     created_date = datetime.now() - timedelta(seconds=GAME_START_WAITING)

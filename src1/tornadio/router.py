@@ -150,7 +150,7 @@ class SocketRouterBase(RequestHandler):
                       cls)
 
 def get_router(handler, settings=None, resource='socket.io/*',
-               io_loop=None, extra_re=None, extra_sep=None):
+               io_loop=None, extra_re=None, extra_sep=None, router_cls=SocketRouterBase):
     """Create new router class with desired properties.
 
     Use this function to create new socket.io server. For example:
@@ -163,7 +163,7 @@ def get_router(handler, settings=None, resource='socket.io/*',
 
        application = tornado.web.Application([PongRouter.route()])
     """
-    router = type('SocketRouter', (SocketRouterBase,), {})
+    router = type('SocketRouter', (router_cls,), {})
     router.tornadio_initialize(handler, settings, resource,
                                io_loop, extra_re, extra_sep)
     return router

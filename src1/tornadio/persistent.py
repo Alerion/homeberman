@@ -79,7 +79,7 @@ class TornadioWebSocketHandler(BaseWebSocketHandler):
         self.connection.on_open(self, *args, **kwargs)
 
     def on_message(self, message):
-        self.async_callback(self.connection.raw_message)(message)
+        self.async_callback(self.connection.raw_message)(self, message)
 
     def on_close(self):
         if self.connection is not None:

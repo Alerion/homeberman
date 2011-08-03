@@ -19,39 +19,44 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         this.init();
     },
     init: function(){
+        this.node = this.canvas.display.rectangle({
+            x: this.x*this.size,
+            y: this.y*this.size,
+            width: this.size,
+            height: this.size
+        });
+
         this.players = {};
-        this.node.css('width', this.size);
-        this.node.css('height', this.size);
-        this.node.css('top', this.y*this.size);
-        this.node.css('left', this.x*this.size);
-        this.node.css('font-size', this.size);
         this.draw();
         var that = this;
-        this.node.click(function(){that.onClick()});
+        this.node.bind('click tap', function(){that.onClick()});
         
         this.dellayedDraw = new jQuery.util.DelayedTask(this.draw, this);
     },
+    getDisplayObject: function(){
+        return this.node;
+    },
     draw: function(){
+        this.node.fill = '';
+        
         if (this.playersNum){
             this.drawPlayer();
-            return
-        };
-        if (this.bomb){
+        }else if (this.bomb){
             this.drawBomb();
-            return
-        };
-        switch(this.type){
-            case jQuery.Game.WALL:
-            this.drawWall();
-            break;
-            
-            default:
-            this.drawEmpty();
-            break;            
-        }        
+        }else {
+            switch(this.type){
+                case jQuery.Game.WALL:
+                this.drawWall();
+                break;
+                
+                default:
+                this.drawEmpty();
+                break;            
+            }            
+        }
     },
     onClick: function(){
-        this.fireEvent('click', this)
+        this.fireEvent('click', this);
     },
     setPlayer: function(player){
         if ( ! this.players[player.id]){
@@ -79,40 +84,40 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         return this.type != jQuery.Game.WALL;
     },
     drawEmpty: function(){
-        this.node.html('');
-        this.node.attr('class', 'cell empty');
+        this.node.fill = '';
+        this.canvas.redraw();
     },
     drawWall: function(){
-        this.node.html('');
-        this.node.attr('class', 'cell wall');
+        this.node.fill = 'image('+IMG_BASE_PATH+'wall.png)';
+        this.canvas.redraw();
     },
     drawBomb: function(){
-        this.node.html('');
-        this.node.attr('class', 'cell bomb');
+        this.node.fill = 'image('+IMG_BASE_PATH+'bomb.png)';
+        this.canvas.redraw();
     },    
     drawPlayer: function(){
         for (key in this.players){
             if (this.players[key].isPlayer && ! this.players[key].isDead){
-                //this.node.html('♞');
-                this.node.attr('class', 'cell player');
+                this.node.fill = 'image('+IMG_BASE_PATH+'bomberman.png)';
+                this.canvas.redraw();
                 return
             }
         }
         
         for (key in this.players){
             if ( ! this.players[key].isDead){
-                //this.node.html('♿');
-                this.node.attr('class', 'cell enemy');
+                this.node.fill = 'image('+IMG_BASE_PATH+'devil.png)';
+                this.canvas.redraw();
                 return
             }
         }
-        this.node.html('');
-        this.node.attr('class', 'cell grave');
+        this.node.fill = 'image('+IMG_BASE_PATH+'dead.png)';
+        this.canvas.redraw();
     },
     drawExplosion: function(){
         if (this.isMoveable()){
-            //this.node.html('☠');
-            this.node.attr('class', 'cell explosion');
+            this.node.fill = 'image('+IMG_BASE_PATH+'fire.png)';
+            this.canvas.redraw();
             this.dellayedDraw.delay(300);            
         }
     }
@@ -135,6 +140,10 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
         GameApi.load_map(this.render, this);
     },
     render: function(info){
+        this.canvas = oCanvas.create({
+            canvas: this.node[0]
+        });        
+
         this.width = info['width'];
         this.height = info['height'];
         for (var x=0; x<this.width; x++){
@@ -143,8 +152,8 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
                 var cell_info = info.cells[key];
                 
                 var config = {
-                    size: this.cell_size,
-                    node: jQuery('<div class="cell"></div>')
+                    canvas: this.canvas,
+                    size: this.cell_size
                 };
                 jQuery.extend(config, cell_info);
                 
@@ -154,11 +163,12 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
                 if (cell_info.has_bomb){
                     this.addBomb(cell);
                 }
-                this.node.append(cell.node);
+                this.canvas.addChild(cell.getDisplayObject());
             }            
         }
-        this.node.css('width', this.width*this.cell_size);
-        this.node.css('height', this.height*this.cell_size);
+
+        this.canvas.canvasElement.width = this.width*this.cell_size;
+        this.canvas.canvasElement.height = this.height*this.cell_size;
     },
     onCellClick: function(cell){
         this.fireEvent('cellclick', cell, this);

@@ -82,12 +82,12 @@ class SocketConnection(object):
         """Focibly close client connection"""
         self._protocol.close()
 
-    def raw_message(self, message):
+    def raw_message(self, handler, message):
         """Called when raw message was received by underlying transport protocol
         """
         for msg in proto.decode(message):
             if msg[0] == proto.FRAME or msg[0] == proto.JSON:
-                self.on_message(msg[1])
+                self.on_message(handler, msg[1])
             elif msg[0] == proto.HEARTBEAT:
                 # TODO: Verify incoming heartbeats
                 logging.debug('Incoming Heartbeat')
