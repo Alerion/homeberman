@@ -36,6 +36,7 @@ class Application(tornado.web.Application):
 
         handlers = [
             tornado.web.url(r"/", MainHandler, name='main'),
+            tornado.web.url(r"/canvas/", TestCanvasHandler, name='canvas'),
             tornado.web.url(r"/login/", GoogleHandler, name='login'),
             tornado.web.url(r"/list/", GameListHandler, name='list_games'),
             tornado.web.url(r"/add/", AddGameHandler, name='add_game'),
@@ -75,6 +76,12 @@ class GameSocketConnection(tornadio.SocketConnection):
 GameSocketRouter = tornadio.get_router(GameSocketConnection, dict(
     enabled_protocols=['websocket', 'flashsocket']
 ))
+
+class TestCanvasHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        context = {}        
+        self.render('canvas.html', **context)
 
 class FinishHandler(BaseHandler):
     
@@ -133,7 +140,6 @@ class MainHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         from django.conf import settings
-        from main.models import MOVE_TIME
 
         game = self.user.get_current_game()
         if not game:
@@ -141,7 +147,6 @@ class MainHandler(BaseHandler):
         
         context = {
             'game': game,
-            'MOVE_TIME': MOVE_TIME,
             'ORBITED_STOMP_SOCKET': settings.ORBITED_STOMP_SOCKET,
             'ORBITED_HTTP_SOCKET': settings.ORBITED_HTTP_SOCKET
         }        

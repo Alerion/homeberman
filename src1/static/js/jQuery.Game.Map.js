@@ -37,8 +37,8 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         return this.node;
     },
     draw: function(){
-        this.node.fill = '';
-        
+        this.node.fill = this.canvas.background.bg;
+        this.canvas.redraw();
         if (this.playersNum){
             this.drawPlayer();
         }else if (this.bomb){
@@ -69,7 +69,7 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         if (this.players[player.id]){
             this.playersNum--;
             delete this.players[player.id];
-            this.draw();         
+            this.draw();
         }        
     },
     setBomb: function(bomb){
@@ -84,8 +84,7 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
         return this.type != jQuery.Game.WALL;
     },
     drawEmpty: function(){
-        this.node.fill = '';
-        this.canvas.redraw();
+        
     },
     drawWall: function(){
         this.node.fill = 'image('+IMG_BASE_PATH+'wall.png)';
@@ -117,7 +116,7 @@ jQuery.Game.Cell = jQuery.inherit(jQuery.util.Observable, {
     drawExplosion: function(){
         if (this.isMoveable()){
             this.node.fill = 'image('+IMG_BASE_PATH+'fire.png)';
-            this.canvas.redraw();
+            //this.canvas.redraw();
             this.dellayedDraw.delay(300);            
         }
     }
@@ -141,7 +140,11 @@ jQuery.Game.Map = jQuery.inherit(jQuery.util.Observable, {
     },
     render: function(info){
         this.canvas = oCanvas.create({
-            canvas: this.node[0]
+            clearEachFrame: false,
+            drawEachFrame: false,
+            fps: 10,
+            canvas: this.node[0],
+            background: '#eee8d5'
         });        
 
         this.width = info['width'];

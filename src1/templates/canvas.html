@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <script src="{{ static('js/ocanvas-1.0.js') }}"></script>
+    <script src="{{ static('js/jquery-1.6.2.min.js') }}"></script>
+    <script>
+        oCanvas.domReady(function () {
+            var canvas = oCanvas.create({
+                canvas: "#canvas",
+                background: "#0cc"
+            });
+            canvas.height = 300;
+            canvas.width = 300;
+            
+            var len = 9;
+            var side = 20;
+            var margin = 10;
+            
+            for (var i=0; i<len; i++){
+                for (var j=0; j<len; j++){
+                    var rectangle = canvas.display.rectangle({
+                        x: margin+i*(side+margin),
+                        y: margin+j*(side+margin),
+                        width: side,
+                        height: side,
+                        fill: "#0aa"
+                    });
+                    rectangle.i = i;
+                    rectangle.j = j;
+                    rectangle.bind('click', function(){
+                        console.log(arguments);
+                    });
+                    canvas.addChild(rectangle);                    
+                }
+            }
+        });
+    </script>
+{% end %}
+
+{% block body %}
+    <canvas id="canvas" style="margin: 30px 30px"/>
+{% end %}

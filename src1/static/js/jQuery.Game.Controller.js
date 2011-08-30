@@ -197,9 +197,8 @@ jQuery.Game.Controller = jQuery.inherit(jQuery.util.Observable, {
             this.createBomb();
             return;
         };
-        var td = +(new Date()) - this.last_move_time;
-
-        if ( ! this.player.isDead && this.canMove(cell) && (td >= MOVE_TIME*1000*0.8)){
+        
+        if ( ! this.player.isDead && this.canMove(cell)){
             GameApi.move(cell.x, cell.y, function(response){
                 if (response){
                     this.player.setCell(cell);

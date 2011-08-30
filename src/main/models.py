@@ -10,7 +10,6 @@ import random
 from django.conf import settings
 from conn_manager import send_game_event
 
-MOVE_TIME = settings.MOVE_TIME
 EXPLOSION_TIME = 2
 RESPOWN_TIME = 10
 GAME_START_WAITING = 60 #seconds
@@ -118,8 +117,7 @@ class Player(models.Model):
         return True        
     
     def can_move(self):
-        return not self.is_dead and self.game.is_plaing() and \
-            (time.time() - self.last_move_time) > MOVE_TIME
+        return not self.is_dead and self.game.is_plaing()
     
     def move_to(self, x, y):
         if not self.can_move():
